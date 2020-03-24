@@ -14,5 +14,9 @@
 *.out
 *.toc
 *.sav
+*.pdf
 main-blx.bib
 __latexindent_temp.tex
+
+# Keep the declaration of originality
+!declaration-originality.pdf
