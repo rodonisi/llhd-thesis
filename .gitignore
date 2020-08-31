@@ -15,8 +15,10 @@
 *.toc
 *.sav
 *.pdf
+*.mintedcmd
 main-blx.bib
 __latexindent_temp.tex
+_minted-main
 
 # Keep the declaration of originality
 !declaration-originality.pdf

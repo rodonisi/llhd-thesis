@@ -1,0 +1,19 @@
+2c2
+<   stream_delay_tb/clk_i  0x00
+---
+>   stream_delay_tb/clk_i  x
+5,6c5,6
+<   stream_delay_tb/ready_i  0x01
+<   stream_delay_tb/ready_o  0x01
+---
+>   stream_delay_tb/ready_i  0x00
+>   stream_delay_tb/ready_o  0x00
+9c9
+<   stream_delay_tb/valid_o  0x01
+---
+>   stream_delay_tb/valid_o  0x00
+10a11,12
+>   stream_delay_tb/ready_i  0x01
+>   stream_delay_tb/ready_o  0x01
+11a14
+>   stream_delay_tb/valid_o  0x01

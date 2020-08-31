@@ -1,0 +1,104 @@
+\chapter{Diff Listings}
+\label{app:diffs}
+
+This appendix contains the full listing of the differences obtain when running the \texttt{diff} utility on the trace generated through Vivado's simulator (on the left, lines starting with \texttt{>}) against the trace generated with our MLIR-based simulator (on the right, lines starting with \texttt{<}). Note that a listing for the graycode example is not presents, as no diff is generated for that example. Also, due to the large amount of variable don't care values (\texttt{x}) present in the Snitch example, we only list the diff for the first $50$ns for that example.
+
+\begin{listing}[H]
+    \inputminted[
+        frame=lines,
+        framesep=2mm,
+        baselinestretch=1.0,
+        % bgcolor=lightgray!10,
+        fontsize=\footnotesize, linenos
+    ]{c}{diffs/diff-cdc_2phase.txt}
+    \caption{Full \texttt{diff} listing for the CDC (fifo) example.}
+\end{listing}
+
+\begin{listing}[H]
+    \inputminted[
+        frame=lines,
+        framesep=2mm,
+        baselinestretch=1.0,
+        % bgcolor=lightgray!10,
+        fontsize=\footnotesize, linenos
+    ]{c}{diffs/diff-cdc_fifo.txt}
+    \caption{Full \texttt{diff} listing for the CDC (gray) example.}
+\end{listing}
+
+\begin{listing}[H]
+    \inputminted[
+        frame=lines,
+        framesep=2mm,
+        baselinestretch=1.0,
+        % bgcolor=lightgray!10,
+        fontsize=\footnotesize, linenos
+    ]{c}{diffs/diff-fifo.txt}
+    \caption{Full \texttt{diff} listing for the Fifo Queue example.}
+\end{listing}
+
+\begin{listing}[H]
+    \inputminted[
+        frame=lines,
+        framesep=2mm,
+        baselinestretch=1.0,
+        % bgcolor=lightgray!10,
+        fontsize=\footnotesize, linenos
+    ]{c}{diffs/diff-fir.txt}
+    \caption{Full \texttt{diff} listing for the FIR example.}
+\end{listing}
+
+\begin{listing}[H]
+    \inputminted[
+        frame=lines,
+        framesep=2mm,
+        baselinestretch=1.0,
+        % bgcolor=lightgray!10,
+        fontsize=\footnotesize, linenos
+    ]{c}{diffs/diff-lfsr.txt}
+    \caption{Full \texttt{diff} listing for the LFSR example.}
+\end{listing}
+
+\begin{listing}[H]
+    \inputminted[
+        frame=lines,
+        framesep=2mm,
+        baselinestretch=1.0,
+        % bgcolor=lightgray!10,
+        fontsize=\footnotesize, linenos
+    ]{c}{diffs/diff-lzc.txt}
+    \caption{Full \texttt{diff} listing for the LZC example.}
+\end{listing}
+
+\begin{listing}[H]
+    \inputminted[
+        frame=lines,
+        framesep=2mm,
+        baselinestretch=1.0,
+        % bgcolor=lightgray!10,
+        fontsize=\footnotesize, linenos
+    ]{c}{diffs/diff-rr.txt}
+    \caption{Full \texttt{diff} listing for the RR Arbiter example.}
+\end{listing}
+
+
+\begin{listing}[H]
+    \inputminted[
+        frame=lines,
+        framesep=2mm,
+        baselinestretch=1.0,
+        % bgcolor=lightgray!10,
+        fontsize=\footnotesize, linenos
+    ]{c}{diffs/diff-snitch.txt}
+    \caption[Full \texttt{diff} listing for the Snitch example.]{Full \texttt{diff} listing for the Snitch example. Note that due to the amount of variable don't care (\texttt{x} values, we only report the differences for the first $50$ns of simulation for this example. We also note that the remaining differences follow the pattern shown in this listing, and all differ either because of an \texttt{x} value, or are a consequence of one of those values.}
+\end{listing}
+
+\begin{listing}[H]
+    \inputminted[
+        frame=lines,
+        framesep=2mm,
+        baselinestretch=1.0,
+        % bgcolor=lightgray!10,
+        fontsize=\footnotesize, linenos
+    ]{c}{diffs/diff-stream_delay.txt}
+    \caption{Full \texttt{diff} listing for the Stream Delayer example.}
+\end{listing}

@@ -35,7 +35,7 @@
 \PassOptionsToPackage{eulerchapternumbers,listings,drafting, pdfspacing, subfig,beramono,eulermath,parts}{classicthesis}
 % Available options: drafting parts nochapters linedheaders eulerchapternumbers beramono eulermath pdfspacing minionprospacing tocaligned dottedtoc manychapters listings floatperchapter subfig
 
-\newcommand{\myTitle}{Lower and Simulate LLHD using MLIR\xspace}
+\newcommand{\myTitle}{Simulating LLHD using MLIR\xspace}
 % \newcommand{\mySubtitle}{\xspace}
 % \newcommand{\myDegree}{Doktor-Ingenieur (Dr.-Ing.)\xspace}
 \newcommand{\myName}{Simon Rodoni\xspace}
@@ -47,16 +47,16 @@
 \newcommand{\myUni}{ETH Zürich\xspace}
 \newcommand{\myLocation}{Zürich\xspace}
 \newcommand{\myTime}{\today\xspace}
-\newcommand{\myVersion}{version 4.2\xspace}
+\newcommand{\myVersion}{version 1.0\xspace}
 
 %----------------------------------------------------------------------------------------
 %	USEFUL COMMANDS
 %----------------------------------------------------------------------------------------
 
-\newcommand{\ie}{i.\,e.}
-\newcommand{\Ie}{I.\,e.}
-\newcommand{\eg}{e.\,g.}
-\newcommand{\Eg}{E.\,g.} 
+\newcommand{\ie}{i.\,e.\,}
+\newcommand{\Ie}{I.\,e.\,}
+\newcommand{\eg}{e.\,g.\,}
+\newcommand{\Eg}{E.\,g.\,}
 
 \newcounter{dummy} % Necessary for correct hyperlinks (to index, bib, etc.)
 \providecommand{\mLyX}{L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
@@ -65,6 +65,45 @@
 %----------------------------------------------------------------------------------------
 %	PACKAGES
 %----------------------------------------------------------------------------------------
+
+\usepackage{rotating}
+\usepackage{booktabs}
+
+\usepackage{minted} % Used for rich code listings
+\usepackage{environ}
+
+\usemintedstyle{vs}
+
+\newmintinline[mlirinline]{mlir.py:MLIRLexer -x}{}
+
+\newenvironment{mlircode}[2]
+{%
+    \VerbatimEnvironment
+    \begin{listing}[H]
+        \caption{#1}%
+        \label{listing:#2}
+        \begin{minted}[linenos, fontsize=\footnotesize]{mlir.py:MLIRLexer -x}%
+}
+{%
+  \end{minted}%
+    \end{listing}%
+}
+
+\newcommand{\mlirfile}[3]{%
+    \begin{listing}[ht]
+        \inputminted[
+            frame=lines,
+            framesep=2mm,
+            baselinestretch=1.0,
+            bgcolor=lightgray!10,
+            fontsize=\footnotesize, linenos
+        ]{mlir.py:MLIRLexer -x}{examples/#3.mlir}
+        \caption[#1]{#2}
+        \label{listing:#3}
+    \end{listing}
+}
+
+%------------------------------------------------
 
 \usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
 
@@ -75,29 +114,29 @@
 %\PassOptionsToPackage{spanish,es-lcroman}{babel}
 \usepackage{babel}
 
-%------------------------------------------------			
+%------------------------------------------------
 
 \usepackage{csquotes}
 \PassOptionsToPackage{%
-%backend=biber, % Instead of bibtex
-backend=bibtex8,bibencoding=ascii,%
-language=auto,%
-style=numeric-comp,%
-%style=authoryear-comp, % Author 1999, 2010
-%bibstyle=authoryear,dashed=false, % dashed: substitute rep. author with ---
-sorting=nyt, % name, year, title
-maxbibnames=10, % default: 3, et al.
-%backref=true,%
-natbib=true % natbib compatibility mode (\citep and \citet still work)
+    %backend=biber, % Instead of bibtex
+    backend=bibtex8,bibencoding=ascii,%
+    language=auto,%
+    style=numeric-comp,%
+    %style=authoryear-comp, % Author 1999, 2010
+    %bibstyle=authoryear,dashed=false, % dashed: substitute rep. author with ---
+    sorting=nyt, % name, year, title
+    maxbibnames=10, % default: 3, et al.
+    %backref=true,%
+    natbib=true % natbib compatibility mode (\citep and \citet still work)
 }{biblatex}
 \usepackage{biblatex}
- 
- %------------------------------------------------
 
-\PassOptionsToPackage{fleqn}{amsmath} % Math environments and more by the AMS 
- \usepackage{amsmath}
- 
- %------------------------------------------------
+%------------------------------------------------
+
+\PassOptionsToPackage{fleqn}{amsmath} % Math environments and more by the AMS
+\usepackage{amsmath}
+
+%------------------------------------------------
 
 \PassOptionsToPackage{T1}{fontenc} % T2A for cyrillics
 \usepackage{fontenc}
@@ -108,7 +147,7 @@ natbib=true % natbib compatibility mode (\citep and \citet still work)
 
 %------------------------------------------------
 
-\usepackage{scrhack} % Fix warnings when using KOMA with listings package  
+\usepackage{scrhack} % Fix warnings when using KOMA with listings package
 
 %------------------------------------------------
 
@@ -120,7 +159,7 @@ natbib=true % natbib compatibility mode (\citep and \citet still work)
 
 %------------------------------------------------
 
-\usepackage{fixltx2e} % Fixes some LaTeX stuff 
+\usepackage{fixltx2e} % Fixes some LaTeX stuff
 
 %------------------------------------------------
 
@@ -133,7 +172,7 @@ natbib=true % natbib compatibility mode (\citep and \citet still work)
 %------------------------------------------------
 
 \PassOptionsToPackage{pdftex}{graphicx}
-\usepackage{graphicx} 
+\usepackage{graphicx}
 
 %----------------------------------------------------------------------------------------
 %	FLOATS: TABLES, FIGURES AND CAPTIONS SETUP
@@ -145,31 +184,47 @@ natbib=true % natbib compatibility mode (\citep and \citet still work)
 \newcommand{\myfloatalign}{\centering} % To be used with each float for alignment
 \usepackage{caption}
 \captionsetup{font=small}
-\usepackage{subfig}  
+\usepackage{subfig}
 
 %----------------------------------------------------------------------------------------
 %	CODE LISTINGS SETUP
 %----------------------------------------------------------------------------------------
 
-\usepackage{listings} 
+\usepackage{listings}
 %\lstset{emph={trueIndex,root},emphstyle=\color{BlueViolet}}%\underbar} % For special keywords
 \lstset{language=[LaTeX]Tex,%C++ % Specify the language(s) for listings here
-morekeywords={PassOptionsToPackage,selectlanguage},
-keywordstyle=\color{RoyalBlue}, % Add \bfseries for bold
-basicstyle=\small\ttfamily, % Makes listings a smaller font size and a different font
-%identifierstyle=\color{NavyBlue}, % Color of text inside brackets
-commentstyle=\color{Green}\ttfamily, % Color of comments
-stringstyle=\rmfamily, % Font type to use for strings
-numbers=left, % Change left to none to remove line numbers
-numberstyle=\scriptsize, % Font size of the line numbers
-stepnumber=5, % Increment of line numbers
-numbersep=8pt, % Distance of line numbers from code listing
-showstringspaces=false, % Sets whether spaces in strings should appear underlined
-breaklines=true, % Force the code to stay in the confines of the listing box
-%frameround=ftff, % Uncomment for rounded frame
-%frame=single, % Frame border - none/leftline/topline/bottomline/lines/single/shadowbox/L
-belowcaptionskip=.75\baselineskip % Space after the "Listing #: Desciption" text and the listing box
+    morekeywords={PassOptionsToPackage,selectlanguage},
+    keywordstyle=\color{RoyalBlue}, % Add \bfseries for bold
+    basicstyle=\small\ttfamily, % Makes listings a smaller font size and a different font
+    %identifierstyle=\color{NavyBlue}, % Color of text inside brackets
+    commentstyle=\color{Green}\ttfamily, % Color of comments
+    stringstyle=\rmfamily, % Font type to use for strings
+    numbers=left, % Change left to none to remove line numbers
+    numberstyle=\scriptsize, % Font size of the line numbers
+    stepnumber=5, % Increment of line numbers
+    numbersep=8pt, % Distance of line numbers from code listing
+    showstringspaces=false, % Sets whether spaces in strings should appear underlined
+    breaklines=true, % Force the code to stay in the confines of the listing box
+    %frameround=ftff, % Uncomment for rounded frame
+    %frame=single, % Frame border - none/leftline/topline/bottomline/lines/single/shadowbox/L
+    belowcaptionskip=.75\baselineskip % Space after the "Listing #: Desciption" text and the listing box
 }
+
+\lstdefinelanguage{mlir}{
+    keywords=[1]{llhd, add, process, entity, prb, drv, sig, const, not, wait, inst},
+    keywordstyle=[1]\color{RoyalBlue},
+    morekeywords=[2]{i1, i32, i64, i1$, i32$, i64$, !llhd, !llvm<, time},
+    keywordstyle=[2]\color{RedViolet},
+    % moredelim=[is][\color{pink}]{<}{>},
+    morekeywords=[3]{-, =, +, /},
+    keywordstyle=[3]\color{gray},
+    otherkeywords={-, >, =},
+    morecomment=[l]{//},
+    morestring=[b][\color{Green}]",
+    sensitive=false,
+    stepnumber=1
+} %
+
 
 %----------------------------------------------------------------------------------------
 %	HYPERREFERENCES
@@ -181,65 +236,65 @@ belowcaptionskip=.75\baselineskip % Space after the "Listing #: Desciption" text
 \pdfadjustspacing=1
 
 \hypersetup{
-% Uncomment the line below to remove all links (to references, figures, tables, etc), useful for b/w printouts
-%draft, 
-colorlinks=true, linktocpage=true, pdfstartpage=3, pdfstartview=FitV,
-% Uncomment the line below if you want to have black links (e.g. for printing black and white)
-%colorlinks=false, linktocpage=false, pdfborder={0 0 0}, pdfstartpage=3, pdfstartview=FitV, 
-breaklinks=true, pdfpagemode=UseNone, pageanchor=true, pdfpagemode=UseOutlines,%
-plainpages=false, bookmarksnumbered, bookmarksopen=true, bookmarksopenlevel=1,%
-hypertexnames=true, pdfhighlight=/O,%nesting=true,%frenchlinks,%
-urlcolor=webbrown, linkcolor=RoyalBlue, citecolor=webgreen, %pagecolor=RoyalBlue,%
+    % Uncomment the line below to remove all links (to references, figures, tables, etc), useful for b/w printouts
+    %draft,
+    colorlinks=true, linktocpage=true, pdfstartpage=3, pdfstartview=FitV,
+    % Uncomment the line below if you want to have black links (e.g. for printing black and white)
+    %colorlinks=false, linktocpage=false, pdfborder={0 0 0}, pdfstartpage=3, pdfstartview=FitV,
+    breaklinks=true, pdfpagemode=UseNone, pageanchor=true, pdfpagemode=UseOutlines,%
+    plainpages=false, bookmarksnumbered, bookmarksopen=true, bookmarksopenlevel=1,%
+    hypertexnames=true, pdfhighlight=/O,%nesting=true,%frenchlinks,%
+    urlcolor=webbrown, linkcolor=RoyalBlue, citecolor=webgreen, %pagecolor=RoyalBlue,%
     %urlcolor=Black, linkcolor=Black, citecolor=Black, %pagecolor=Black,%
-%------------------------------------------------
-% PDF file meta-information
-pdftitle={\myTitle},
-pdfauthor={\textcopyright\ \myName, \myUni, \myDepartment},
-pdfsubject={},
-pdfkeywords={},
-pdfcreator={pdfLaTeX},
-pdfproducer={LaTeX with hyperref and classicthesis}
-%------------------------------------------------
+    %------------------------------------------------
+    % PDF file meta-information
+    pdftitle={\myTitle},
+    pdfauthor={\textcopyright\ \myName, \myUni, \myDepartment},
+    pdfsubject={},
+    pdfkeywords={},
+    pdfcreator={pdfLaTeX},
+    pdfproducer={LaTeX with hyperref and classicthesis}
+    %------------------------------------------------
 }
 
 %----------------------------------------------------------------------------------------
 %	AUTOREFERENCES SETUP
-%	Redefines how references in text are prefaced for different 
+%	Redefines how references in text are prefaced for different
 %	languages (e.g. "Section 1.2" or "section 1.2")
 %----------------------------------------------------------------------------------------
 
 \makeatletter
 \@ifpackageloaded{babel}
 {
-\addto\extrasamerican{
-\renewcommand*{\figureautorefname}{Figure}
-\renewcommand*{\tableautorefname}{Table}
-\renewcommand*{\partautorefname}{Part}
-\renewcommand*{\chapterautorefname}{Chapter}
-\renewcommand*{\sectionautorefname}{Section}
-\renewcommand*{\subsectionautorefname}{Section}
-\renewcommand*{\subsubsectionautorefname}{Section}
-}
-\addto\extrasngerman{
-\renewcommand*{\paragraphautorefname}{Absatz}
-\renewcommand*{\subparagraphautorefname}{Unterabsatz}
-\renewcommand*{\footnoteautorefname}{Fu\"snote}
-\renewcommand*{\FancyVerbLineautorefname}{Zeile}
-\renewcommand*{\theoremautorefname}{Theorem}
-\renewcommand*{\appendixautorefname}{Anhang}
-\renewcommand*{\equationautorefname}{Gleichung}
-\renewcommand*{\itemautorefname}{Punkt}
-}
-\providecommand{\subfigureautorefname}{\figureautorefname} % Fix to getting autorefs for subfigures right
+    \addto\extrasamerican{
+        \renewcommand*{\figureautorefname}{Figure}
+        \renewcommand*{\tableautorefname}{Table}
+        \renewcommand*{\partautorefname}{Part}
+        \renewcommand*{\chapterautorefname}{Chapter}
+        \renewcommand*{\sectionautorefname}{Section}
+        \renewcommand*{\subsectionautorefname}{Section}
+        \renewcommand*{\subsubsectionautorefname}{Section}
+    }
+    \addto\extrasngerman{
+        \renewcommand*{\paragraphautorefname}{Absatz}
+        \renewcommand*{\subparagraphautorefname}{Unterabsatz}
+        \renewcommand*{\footnoteautorefname}{Fu\"snote}
+        \renewcommand*{\FancyVerbLineautorefname}{Zeile}
+        \renewcommand*{\theoremautorefname}{Theorem}
+        \renewcommand*{\appendixautorefname}{Anhang}
+        \renewcommand*{\equationautorefname}{Gleichung}
+        \renewcommand*{\itemautorefname}{Punkt}
+    }
+    \providecommand{\subfigureautorefname}{\figureautorefname} % Fix to getting autorefs for subfigures right
 }{\relax}
 \makeatother
 
 %----------------------------------------------------------------------------------------
 
-\usepackage{classicthesis} 
+\usepackage{classicthesis}
 
 %----------------------------------------------------------------------------------------
-%	CHANGING TEXT AREA 
+%	CHANGING TEXT AREA
 %----------------------------------------------------------------------------------------
 
 %\linespread{1.05} % a bit more for Palatino
@@ -256,7 +311,7 @@ pdfproducer={LaTeX with hyperref and classicthesis}
 %\usepackage[light,condensed,math]{iwona}
 %\renewcommand{\sfdefault}{iwona}
 %\usepackage{lmodern} % <-- no osf support :-(
-%\usepackage{cfr-lm} % 
+%\usepackage{cfr-lm} %
 %\usepackage[urw-garamond]{mathdesign} <-- no osf support :-(
-%\usepackage[default,osfigures]{opensans} % scale=0.95 
+%\usepackage[default,osfigures]{opensans} % scale=0.95
 %\usepackage[sfdefault]{FiraSans}

@@ -2,7 +2,7 @@
 
 name: Compile thesis
 
-# Controls when the action will run. Triggers the workflow on push or pull request 
+# Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on: [push, pull_request]
 
@@ -18,20 +18,16 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    #- name: LaTeX compilation
-    #  uses: xu-cheng/latex-action@master
-    #  with:
-    #    # The root LaTeX file to be compiled
-    #    root_file: main.tex
-
     - name: Rename to final name
-      run: mv main.tex thesis-llhd-simulator.tex 
+      run: mv main.tex thesis-llhd-sim.tex
 
-    - name: LaTeX compilation - Blind (for submsission)
+    - name: LaTeX compilation
       uses: xu-cheng/latex-action@master
       with:
         # The root LaTeX file to be compiled
-        root_file: thesis-llhd-simulator.tex
+        root_file: thesis-llhd-sim.tex
+        latexmk_shell_escape: true
+        extra_system_packages: "py-pygments"
 
     - name: Create Release
       id: create_release
@@ -44,6 +40,7 @@ jobs:
         draft: false
         prerelease: false
         allowUpdates: true
+
     - name: Upload Release Asset
       id: upload-release-asset
       uses: actions/upload-release-asset@v1

@@ -9,26 +9,8 @@
   eprintclass = {cs.PL},
   eprinttype  = {arXiv},
   file        = {:http\://arxiv.org/pdf/2002.11054v2:PDF},
+  groups      = {IR},
   keywords    = {cs.PL, cs.LG},
-}
-
-@Article{Schueki2020,
-  author = {Fabian Schueki and Andreas Kurth and Tobias Grosser and Luca Benini},
-  title  = {LLHD: A Multi-Level Intermediate Representation for Hardware Description Languages},
-  year   = {2020},
-}
-
-@Article{Toscano2012,
-  author      = {Luca Toscano and Gabriele D'Angelo and Moreno Marzolla},
-  title       = {Parallel Discrete Event Simulation with Erlang},
-  abstract    = {Discrete Event Simulation (DES) is a widely used technique in which the state of the simulator is updated by events happening at discrete points in time (hence the name). DES is used to model and analyze many kinds of systems, including computer architectures, communication networks, street traffic, and others. Parallel and Distributed Simulation (PADS) aims at improving the efficiency of DES by partitioning the simulation model across multiple processing elements, in order to enabling larger and/or more detailed studies to be carried out. The interest on PADS is increasing since the widespread availability of multicore processors and affordable high performance computing clusters. However, designing parallel simulation models requires considerable expertise, the result being that PADS techniques are not as widespread as they could be. In this paper we describe ErlangTW, a parallel simulation middleware based on the Time Warp synchronization protocol. ErlangTW is entirely written in Erlang, a concurrent, functional programming language specifically targeted at building distributed systems. We argue that writing parallel simulation models in Erlang is considerably easier than using conventional programming languages. Moreover, ErlangTW allows simulation models to be executed either on single-core, multicore and distributed computing architectures. We describe the design and prototype implementation of ErlangTW, and report some preliminary performance results on multicore and distributed architectures using the well known PHOLD benchmark.},
-  date        = {2012-06-13},
-  doi         = {10.1145/2364474.2364487},
-  eprint      = {1206.2775v3},
-  eprintclass = {cs.DC},
-  eprinttype  = {arXiv},
-  file        = {:http\://arxiv.org/pdf/1206.2775v3:PDF},
-  keywords    = {cs.DC, D.1.3; I.6.8},
 }
 
 @Article{Ashenden1994,
@@ -39,26 +21,137 @@
   pages  = {1-16},
   volume = {2},
   doi    = {10.1155/1994/86178},
+  groups = {Simulation},
 }
 
-@Misc{Walker1995,
-  author = {Peter A. Walker},
-  title  = {Asynchronous, Distributed Event Driven Simulation Algorithm for Execution of VHDL on Parallel Processors},
-  year   = {1995},
-  doi    = {10.1109/dac.1995.250079},
-  issn   = {0738-100X},
+@Article{Schuiki2020,
+  author      = {Fabian Schuiki and Andreas Kurth and Tobias Grosser and Luca Benini},
+  title       = {LLHD: A Multi-level Intermediate Representation for Hardware Description Languages},
+  abstract    = {Modern Hardware Description Languages (HDLs) such as SystemVerilog or VHDL are, due to their sheer complexity, insufficient to transport designs through modern circuit design flows. Instead, each design automation tool lowers HDLs to its own Intermediate Representation (IR). These tools are monolithic and mostly proprietary, disagree in their implementation of HDLs, and while many redundant IRs exists, no IR today can be used through the entire circuit design flow. To solve this problem, we propose the LLHD multi-level IR. LLHD is designed as simple, unambiguous reference description of a digital circuit, yet fully captures existing HDLs. We show this with our reference compiler on designs as complex as full CPU cores. LLHD comes with lowering passes to a hardware-near structural IR, which readily integrates with existing tools. LLHD establishes the basis for innovation in HDLs and tools without redundant compilers or disjoint IRs. For instance, we implement an LLHD simulator that runs up to 2.4x faster than commercial simulators but produces equivalent, cycle-accurate results. An initial vertically-integrated research prototype is capable of representing all levels of the IR, implements lowering from the behavioural to the structural IR, and covers a sufficient subset of SystemVerilog to support a full CPU design.},
+  date        = {2020-04-07},
+  eprint      = {2004.03494v1},
+  eprintclass = {cs.PL},
+  eprinttype  = {arXiv},
+  file        = {:http\://arxiv.org/pdf/2004.03494v1:PDF},
+  groups      = {IR},
+  keywords    = {cs.PL},
 }
 
-@Misc{Fujimoto,
-  author = {R. M. Fujimoto},
-  title  = {Parallel and Distributed Discrete Event Simulation: Algorithms and Applications},
-  doi    = {10.1109/wsc.1993.718035},
+@InProceedings{lattner.llvm,
+  author    = {C. {Lattner} and V. {Adve}},
+  booktitle = {International Symposium on Code Generation and Optimization, 2004. CGO 2004.},
+  title     = {LLVM: a compilation framework for lifelong program analysis transformation},
+  year      = {2004},
+  pages     = {75-86},
 }
 
-@Misc{Bain,
-  author = {W. L. Bain},
-  title  = {Parallel Discrete Event Simulation Using Synchronized Event Schedulers},
-  doi    = {10.1109/dmcc.1990.555367},
+@Article{Cytron1991,
+  author = {Ron Cytron and Jeanne Ferrante and Barry K. Rosen and Mark N. Wegman and F. Kenneth Zadeck},
+  title  = {Efficiently computing static single assignment form and the control dependence graph},
+  year   = {1991},
+  issn   = {0164-0925},
+  pages  = {451-490},
+  volume = {13},
+  doi    = {10.1145/115372.115320},
+}
+
+@Misc{Alpern1988,
+  author = {B. Alpern and M. N. Wegman and F. K. Zadeck},
+  title  = {Detecting equality of variables in programs},
+  year   = {1988},
+  doi    = {10.1145/73560.73561},
+}
+
+@Misc{Cytron1989,
+  author = {R. Cytron and J. Ferrante and B. K. Rosen and M. N. Wegman and F. K. Zadeck},
+  title  = {An efficient method of computing static single assignment form},
+  year   = {1989},
+  doi    = {10.1145/75277.75280},
+}
+
+@InProceedings{Kumar1998,
+  author    = {R. {Kumar}},
+  booktitle = {Wescon/98. Conference Proceedings (Cat. No.98CH36265)},
+  title     = {Formal verification of hardware: misconception and reality},
+  year      = {1998},
+  pages     = {135-138},
+  groups    = {Simulation},
+}
+
+@InProceedings{YuanLu2001,
+  author    = {{Yuan Lu} and {Weimin Li}},
+  booktitle = {ASICON 2001. 2001 4th International Conference on ASIC Proceedings (Cat. No.01TH8549)},
+  title     = {A semi-formal verification methodology},
+  year      = {2001},
+  pages     = {33-37},
+  groups    = {Simulation},
+}
+
+@Article{Zaruba2020,
+  author      = {Florian Zaruba and Fabian Schuiki and Torsten Hoefler and Luca Benini},
+  title       = {Snitch: A 10 kGE Pseudo Dual-Issue Processor for Area and Energy Efficient Execution of Floating-Point Intensive Workloads},
+  abstract    = {Data-parallel applications, such as data analytics, machine learning, and scientific computing, are placing an ever-growing demand on floating-point operations per second on emerging systems. With increasing integration density, the quest for energy efficiency becomes the number one design concern. While dedicated accelerators provide high energy efficiency, they are over-specialized and hard to adjust to algorithmic changes. We propose an architectural concept that tackles the issues of achieving extreme energy efficiency while still maintaining high flexibility as a general-purpose compute engine. The key idea is to pair a tiny 10kGE control core, called Snitch, with a double-precision FPU to adjust the compute to control ratio. While traditionally minimizing non-FPU area and achieving high floating-point utilization has been a trade-off, with Snitch, we achieve them both, by enhancing the ISA with two minimally intrusive extensions: stream semantic registers (SSR) and a floating-point repetition instruction (FREP). SSRs allow the core to implicitly encode load/store instructions as register reads/writes, eliding many explicit memory instructions. The FREP extension decouples the floating-point and integer pipeline by sequencing instructions from a micro-loop buffer. These ISA extensions significantly reduce the pressure on the core and free it up for other tasks, making Snitch and FPU effectively dual-issue at a minimal incremental cost of 3.2%. The two low overhead ISA extensions make Snitch more flexible than a contemporary vector processor lane, achieving a $2\times$ energy-efficiency improvement. We have evaluated the proposed core and ISA extensions on an octa-core cluster in 22nm technology. We achieve more than $5\times$ multi-core speed-up and a $3.5\times$ gain in energy efficiency on several parallel microkernels.},
+  date        = {2020-02-24},
+  eprint      = {2002.10143v1},
+  eprintclass = {cs.AR},
+  eprinttype  = {arXiv},
+  file        = {:http\://arxiv.org/pdf/2002.10143v1:PDF},
+  keywords    = {cs.AR},
+}
+
+@Article{VHDL2009,
+  journal = {IEEE Std 1076-2008 (Revision of IEEE Std 1076-2002)},
+  title   = {IEEE Standard VHDL Language Reference Manual},
+  year    = {2009},
+  pages   = {1-640},
+}
+
+@Article{SV2018,
+  journal = {IEEE Std 1800-2017 (Revision of IEEE Std 1800-2012)},
+  title   = {IEEE Standard for SystemVerilog--Unified Hardware Design, Specification, and Verification Language},
+  year    = {2018},
+  pages   = {1-1315},
+}
+
+@Misc{llhd.io,
+  howpublished = {\url{http://llhd.io}},
+  note         = {[Online; accessed 31-August-2020]},
+}
+
+@Misc{moore,
+  howpublished = {\url{https://github.com/fabianschuiki/moore}},
+  year         = {[Online; accessed 31-August-2020]},
+}
+
+@Misc{llhd-sim,
+  howpublished = {\url{https://github.com/fabianschuiki/llhd-sim}},
+  year         = {[Online; accessed 31-August-2020]},
+}
+
+@Misc{tablegen,
+  howpublished = {\url{https://llvm.org/docs/TableGen/}},
+  year         = {[Online; accessed 31-August-2020]},
+}
+
+@Misc{gtkwave,
+  howpublished = {\url{http://gtkwave.sourceforge.net/}},
+  year         = {[Online; accessed 31-August-2020]},
+}
+
+@Misc{vcddiff,
+  howpublished = {\url{https://github.com/palmer-dabbelt/vcddiff}},
+  year         = {[Online; accessed 31-August-2020]},
+}
+
+@Misc{vivado,
+  howpublished = {\url{https://www.xilinx.com/products/design-tools/vivado.html}},
+  year         = {[Online; accessed 31-August-2020]},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}
+
+@Comment{jabref-meta: grouping:
+0 AllEntriesGroup:;
+1 StaticGroup:IR\;0\;1\;0x8a8a8aff\;\;\;;
+1 StaticGroup:Simulation\;0\;1\;0x8a8a8aff\;\;\;;
+}

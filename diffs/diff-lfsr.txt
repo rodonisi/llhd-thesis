@@ -1,0 +1,8 @@
+2,4c2,4
+<   lfsr_16bit_tb/clk_i  0x00
+<   lfsr_16bit_tb/en_i  0x00
+<   lfsr_16bit_tb/out_o  0x0000
+---
+>   lfsr_16bit_tb/clk_i  x
+>   lfsr_16bit_tb/en_i  x
+>   lfsr_16bit_tb/out_o  x

@@ -33,8 +33,8 @@
 		dottedtoc, % Make page numbers in the table of contents flushed right with dots leading to them
 		BCOR=5mm,paper=a4,fontsize=11pt, % Binding correction, paper type and font size
 		ngerman,american, % Languages, change this to your language(s)
-		]{scrreprt} 
-                
+		]{scrreprt}
+
 % Includes the file which contains all the document configurations and packages - make sure to edit this file
 \input{classicthesis-config}
 
@@ -95,7 +95,10 @@
 %----------------------------------------------------------------------------------------
 
 \include{Chapters/01-introduction}
-\include{Chapters/02-background}
+\include{Chapters/02-ir}
+\include{Chapters/03-simulation}
+\include{Chapters/04-evaluation}
+\include{Chapters/05-conclusion}
 
 \cleardoublepage % Empty page before the start of the next part
 
@@ -103,12 +106,12 @@
 %	THESIS CONTENT - APPENDICES
 %----------------------------------------------------------------------------------------
 
-% \appendix
+\appendix
 
 % \part{Appendix} % New part of the thesis for the appendix
 
-% \include{Chapters/Chapter0A} % Appendix A
-%\include{Chapters/Chapter0B} % Appendix B - empty template
+\include{Chapters/appendixA} % Appendix A
+\include{Chapters/appendixB} % Appendix B - empty template
 
 %----------------------------------------------------------------------------------------
 %	POST-CONTENT THESIS PAGES
@@ -116,11 +119,11 @@
 
 \cleardoublepage\include{FrontBackMatter/Bibliography} % Bibliography
 
+
+% \cleardoublepage\include{FrontBackMatter/Appendix} % Appendix
+
 % \cleardoublepage\include{FrontBackMatter/Declaration} % Declaration
 \cleardoublepage\includepdf[pages={-}]{FrontBackMatter/declaration-originality.pdf}
-
-\cleardoublepage\include{FrontBackMatter/Colophon} % Colophon
-
 %----------------------------------------------------------------------------------------
 
 \end{document}

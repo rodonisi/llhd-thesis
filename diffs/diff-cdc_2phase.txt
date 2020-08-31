@@ -1,0 +1,16 @@
+3c3
+<   cdc_2phase_tb/dst_clk_i  0x00
+---
+>   cdc_2phase_tb/dst_clk_i  x
+5c5
+<   cdc_2phase_tb/dst_ready_i  0x00
+---
+>   cdc_2phase_tb/dst_ready_i  x
+8c8
+<   cdc_2phase_tb/src_clk_i  0x00
+---
+>   cdc_2phase_tb/src_clk_i  x
+12c12
+<   cdc_2phase_tb/src_valid_i  0x00
+---
+>   cdc_2phase_tb/src_valid_i  x
