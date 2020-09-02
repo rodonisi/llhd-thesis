@@ -249,10 +249,13 @@ Extraction on signals, pointers and arrays are also expected to be legal when ac
 \subsubsection{Probing and Driving Signals}
 Due to the requirement of a byte-offset value, as described previously, we cannot probe a signal by just loading the value referenced by the signal pointer. Also, we can have a case where a signal value spans only partially over the last byte of the memory region, due to the variable bit-width of integers.
 
-To probe a signal we thus always load the minimum amount of bytes, required to store the integer type, from the memory region, and an additional byte to cover the case we just described. We then shift the loaded value by the given byte-offset, to ensure the loaded value starts at the correct position, and finally truncate the resulting value to the bit-width dictated by the signal's carried type.
+To probe a signal we thus always load the minimum amount of bytes, required to store the integer type, from the memory region, and an additional byte to cover the case we just described. We then shift the loaded value by the given byte-offset, to ensure the loaded value starts at the correct position, and finally truncate the resulting value to the bit-width dictated by the signal's carried type. Figure \ref{fig:sig} shows an example of this process.
 
 \begin{figure}[ht]
-    \caption{<PH> Illustration of the converted probe semantics.}
+    \includegraphics[width=\textwidth]{gfx/Probe.png}
+    \caption[<PH> Illustration of the converted probe semantics.]{<PH> Illustration of the converted probe semantics. Here we want to probe an \texttt{i6} sub-signal (red area) of an \texttt{i8} signal (bits $0$
+        through $7$). The gray area represents the buffer region allocated for the signal.}
+    \label{fig:prb}
 \end{figure}
 
 Driving a signal requires us to spawn a new event in the event queue of the simulator, rather than directly update the stored signal value. As mentioned before, we interact with the state through a runtime library, and we do the same here. We use a runtime function, \texttt{drive\_signal}, to take the new value to drive, and spawn a new event after the drive delay, or add the change to an existing event, if one for the given timestamp already exists.
@@ -277,15 +280,17 @@ We propose a textual trace dump format, which is both human-readable without the
 
 In this textual representation, we use the following syntax:
 \mint[showspaces, fontsize=\footnotesize]{c}|<timestamp>  <full-signal-hierarchical-path>  <value>|
-\noindent where we first print the timestamp of the value change, listing the real-time, delta step and epsilon values separated by one space. Next we can find a slash-separated (/) full hierarchical path of the signal, and finally the value the signal assumes at that time-step. The three elements of the entry are separated by two white spaces.
-
-A single signal generates one entry for each instance it is connected to, with the respective hierarchical path. Here we also note that our current implementation, we cannot retrieve the port names in the unit signatures, and we thus have  to use the original name of the signal for all the hierarchical paths, rather than the port names.
-
-Within the same time-step, we define the order for the entries to follow the lexicographical order by the full hierarchical paths. This allows a more normalized and well-formed comparison between traces.
-
-We always dump the updated values in hexadecimal format, with leading \texttt{0x} prefix, and $0$-padded to the nearest byte. Reason for this is mainly to keep a compact and coherent format throughout the whole trace. But this comes at the cost of not being able to distinguish, for example, an \texttt{i1} signal from an \texttt{i8} signal by purely looking at the trace.
+\noindent The first element is the full timestamp, reporting the exact time, including delta and epsilon steps separated by one blank space. Next, we report a slash-separated (/) full hierarchical path of the updated signal.
+% where we first print the timestamp of the value change, listing the real-time, delta step and epsilon values separated by one space. Next we can find a slash-separated (/) full hierarchical path of the signal, and finally the value the signal assumes at that time-step. The three elements of the entry are separated by two white spaces.
+Finally, we print the new value in hexadecimal format, with prefixed by \texttt{0x}, and $0$-padded to the nearest byte. Reason for this is mainly to keep a compact and coherent format throughout the whole trace. But this comes at the cost of not being able to distinguish, for example, an \texttt{i1} signal from an \texttt{i8} signal by purely looking at the trace.
 
 For structured-type signals, we transpose the signal value dump by generating one trace entry for each element of the signal, and appending the respective index to the hierarchical path.
+
+A single signal generates one entry for each instance it is connected to, with the respective hierarchical path. Here we also note that our current implementation, we cannot retrieve the port names in the unit signatures, and we thus have  to use the original name of the signal for all the hierarchical paths of the connected instances, rather than the port names.
+
+A signal generates an entry in the trace only if a drive causes an actual change to the signal value. If a drive occurs, which does not actually change the signal value, it generates no entry in the trace.
+
+Within the same time-step, we define the order for the entries to follow the lexicographical order by the full hierarchical paths. This allows a more normalized and well-formed comparison between traces.
 
 Listing \ref{listing:toggle_trace} shows an example of trace for the first $10$ns of simulation of Listing \ref{listing:mlir_toggle}. Note that all the real-time values are listed in picoseconds. This is because we currently have assigned a static granularity of $1$ps for the simulator and don't perform any further formatting for the time values.
 
@@ -309,7 +314,7 @@ For those reasons, we also propose some variations of this format, that can also
     \item Limit the traced signals to only the ones at the top level of the design. Those are usually the signals owned by the simulated test-bench, and are often the ones of most interest for human inspection. The rationale for this is that the tested circuit can be seen as a “black-box“, and we can infer its correctness by the correctness of its results (the top-level signals).
     \item Merge all sub-steps into their real-time-step, such that only the final state of each signal is present for each time-step. This brings the trace closer to a typical VCD trace, where time sub-steps are not listed. Here we also group all signal changes that occur at the same time-step under only one timestamp, as shown in Listing \ref{listing:merged-syntax}. This allows to identify time-steps more easily when visually inspecting the trace.
     \item Trace only the top-level signals and merge all time sub-steps. This effectively merges the concepts introduced in variations 1. and 2., to further ease visual inspection.
-    \item Filter out default-named helper signals. \texttt{moore} often introduces new helper signals during compilation to fully represent the original design. These will not have a name representative of the signal, but are rather given an SSA ID as any other value in the IR. When comparing against non-LLHD simulators though, these signals become superfluous, and filtering them out enables direct comparison against traces from other simulators.
+    \item Filter out default-named helper signals. \texttt{moore} often introduces new helper signals during compilation to fully represent the original design. These will not have a name representative of the signal, but are rather given an SSA ID as any other value in the IR. In non-LLHD simulators though, those signals are not represented, as they're not part of the original design. Filtering them out enables us to perform a comparison against SystemVerilog simulators.
 \end{enumerate}
 
 % A first variation just limits the traced signals to only the ones at the top level of the design. Those are usually the signals owned by the test-bench that is being simulated, and often the ones of most interest when human interaction is necessary.
@@ -330,4 +335,5 @@ For those reasons, we also propose some variations of this format, that can also
     \end{minipage}
 \end{listing}
 
+We also provide a starting point for a modular tracing infrastructure, with the goal of making it easier to add more formats in the future, such as VCD, to also enable a standard format.
 
