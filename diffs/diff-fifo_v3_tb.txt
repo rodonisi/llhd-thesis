@@ -1,0 +1,21 @@
+2c2
+<   fifo_v3_tb/clk_i  x
+---
+>   fifo_v3_tb/clk_i  0x00
+5,10d4
+<   fifo_v3_tb/empty_o  x
+<   fifo_v3_tb/full_o  x
+<   fifo_v3_tb/pop_i  x
+<   fifo_v3_tb/push_i  x
+<   fifo_v3_tb/rst_ni  0x01
+< 1000ps
+13,14d6
+<   fifo_v3_tb/rst_ni  0x00
+< 1250ps
+15a8,10
+>   fifo_v3_tb/push_i  0x00
+>   fifo_v3_tb/rst_ni  0x01
+> 250ps
+16a12,13
+> 1000ps
+>   fifo_v3_tb/rst_ni  0x00

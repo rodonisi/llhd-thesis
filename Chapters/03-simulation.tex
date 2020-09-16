@@ -5,14 +5,14 @@
 
 Simulation is an important tool in hardware verification, together with formal verification \cite{YuanLu2001, Kumar1998}. It allows to ensure a design follows the expected behavior, as well as enabling comparison with the behavior of the manufactured circuit \cite{Ashenden1994}.
 
-Furthermore, performing a correct simulation of our LLHD dialect allows us to assert that LLHD is in fact fully representable in MLIR, as well as testing that new passes do not affect the semantics of the design. The latter in particular already showed to be valuable in Martin Erharts work.
+Furthermore, performing a correct simulation of our LLHD dialect allows us to assert that LLHD is fully representable in MLIR, as well as testing that new passes do not affect the semantics of the design. The latter in particular already showed to be valuable in Martin Erhart's work.
 
-We propose a first prototype of a simulator using LLHD's MLIR representation, called \texttt{llhd-sim} (same as the LLHD reference simulator). For this first prototype, we follow a similar approach to the \texttt{LLHD-Blaze} simulator \cite{Schuiki2020}, by leveraging Just-In-Time (\textit{JIT}) code generation, in combination with a MLIR conversion pass from LLHD dialect to the LLVM dialect, to enable the execution of the units, and a sequential event-driven algorithm to carry out a behavioral simulation of the design. With this first research prototype we can successfully simulate real-world designs such as a full \textit{Snitch} \cite{Zaruba2020} processor. A correctness and performance evaluation is provided in Chapter \ref{ch:eval}
+We propose a first prototype of a simulator using LLHD's MLIR representation, called \texttt{llhd-sim} (same as the LLHD reference simulator). For this prototype, we follow a similar approach to the \textit{LLHD-Blaze} simulator \cite{Schuiki2020}, by leveraging Just-In-Time (\textit{JIT}) code generation, in combination with an MLIR conversion pass from LLHD dialect to the LLVM dialect, to enable the execution of the units, and a sequential event-driven algorithm to carry out a behavioral simulation of the design. With this first research prototype, we can successfully simulate real-world designs such as a full \textit{Snitch} \cite{Zaruba2020} processor. A correctness and performance evaluation is provided in Chapter \ref{ch:eval}
 
 %---------------------------------------------------------------------------------------------------
 
 \section{Sequential Event-Driven Simulation}
-Event-Driven Simulation algorithms \cite{Ashenden1994} view a physical design as a collection of physical processes. Physical processes then communicate with each other by reacting and generating time-stamped events, carrying the changes that happen to the physical signals during their execution. Each process can modify its local state, but only communicate with other processes through events. This means that process execution during a time-step is independent of all other processes executed during that time-step, where a \textit{time-step} represents a unique instant in simulation time. The correctness of the simulation can thus be guaranteed if a processes acts upon events in non-decreasing time-stamp order. We also note that the order in which events happening at the same time-step are processes is not defined, and is thus not relevant for correctness, since all the events in that step are independent of each other.
+Event-Driven Simulation algorithms \cite{Ashenden1994} view a physical design as a collection of physical processes. Physical processes then communicate with each other by reacting and generating time-stamped events, carrying the changes that happen to the physical signals during their execution. Each process can modify its local state but only communicate with other processes through events. This means that process execution during a time-step is independent of all other processes executed during that time-step, where a \textit{time-step} represents a unique instant in simulation time. The correctness of the simulation can thus be guaranteed if a process acts upon events in non-decreasing time-stamp order. We also note that no order is defined on independent events, and they can thus be processed in any order, without hurting the correctness of the algorithm. This holds in particular for events carrying the same timestamp, as those are always guaranteed to be independent.
 
 \begin{listing}[ht]
     \caption{Sequential event-driven simulation algorithm.}
@@ -36,23 +36,21 @@ In a sequential implementation, as shown in Listing \ref{listing:seqEDS}, events
 
 %---------------------------------------------------------------------------------------------------
 
-\section{LLHD simulation}
+\section{LLHD Simulation}
 In LLHD, each unit (both entities and processes) represents one physical process. Each process can be sensible to a (sub-) set of all the signals present in the design.
 
 In the case of an entity, its body is executed in its entirety each time one of the entity's owned signals (signals defined in that entity's body) or an input (or output) signal changes.
 
-Processes on the other side can suspend their execution before the end of the body is reached. Furthermore, they can include control-flow loops and potentially run indefinitely. Generally speaking, the only way of completely stopping a process' execution is for it to reach a halt operation, which prevents the process from ever waking up again. A process execution thus usually resumes at the block targeted by the last wait operation that suspended a previous execution, whenever an observed signal changes, or we reach the time of a scheduled wake-up. The only exceptions to this is the first execution, where the process starts at the entry block.
+Processes on the other side can suspend their execution before the end of the body is reached. Furthermore, they can include control-flow loops and potentially run indefinitely. Generally speaking, the only way of completely stopping a process's execution is for it to reach a halt operation, which prevents the process from ever waking up again. A process execution thus usually resumes at the block targeted by the wait operation that suspended the process during its last execution, whenever the wait condition is met. The only exception to this is the first execution, where the process starts at the entry block.
 
 \begin{listing}[ht]
-    \caption{Revisited sequential event-driven simulation algorithm used to simulate LLHD.}
-    \label{listing:seqLLHD}
     \begin{minted}[
-    frame=lines,
-    framesep=2mm,
-    baselinestretch=1.0,
-    bgcolor=lightgray!10,
-    fontsize=\footnotesize, linenos
-  ]{c}
+        frame=lines,
+        framesep=2mm,
+        baselinestretch=1.0,
+        bgcolor=lightgray!10,
+        fontsize=\footnotesize, linenos
+        ]{c}
 initialize all logical processes
 while event-queue EQ not empty do
     set global simulation time to timestamp of first event in EQ
@@ -60,10 +58,13 @@ while event-queue EQ not empty do
     apply the signal changes scheduled by the event
     wake up all sensitive units
     enqueue any new events scheduled by the units
-\end{minted}
+    \end{minted}
+    \caption{Revisited sequential event-driven simulation algorithm used to simulate LLHD.}
+    \label{listing:seqLLHD}
 \end{listing}
 
-Listing \ref{listing:seqLLHD} revisits the sequential algorithm from Listing \ref{listing:seqEDS} to fit it to our needs. For each cycle, we build a wake-up queue, which lists all the units that require to be executed in that cycle. After updating the global simulation time, the signal changes scheduled in the event are first processed, which also fill \textit{wake-up queue}. All units in the wake-up queue are then executed (sequentially), and all the new events are finally queued in the event queue. We also note that we generate only one event for each unique instant, and this contains all the signal changes occurring in that instant, instead of having one event for each signal change. This allows us to both reduce the event-queue size and number of unit executions, while still guaranteeing simulation correctness, since all those changes are independent, as previously described. Also note that if the same signal is updated multiple times in the same time-step, only one of those changes will be observable.
+Listing \ref{listing:seqLLHD} revisits the sequential algorithm from Listing \ref{listing:seqEDS} to fit it to our needs. For each cycle, we build a \textit{wake-up queue}, which lists all the units that require to be executed in that cycle. After updating the global simulation time, the signal changes scheduled in the top-most event are first processed, filling the wake-up queue with the sensitive instances. All units in the wake-up queue are then executed (sequentially), and all the new events are finally queued in the event queue. We also note that we generate only one event for each unique instant, and this contains all the signal changes occurring in that instant, instead of having one event for each signal change. This allows us to both reduce the event-queue size and number of unit executions, while still guaranteeing simulation correctness due to the independence of such changes, as previously described. Also note that if the same signal is updated multiple times in the same time-step, only one change will be visible, obtained by applying all of them to the current value, in order of insertion in the event.
+
 
 Following this revisited algorithm, we build a simulator using the structures described in Section \ref{sec:structs} to maintain the simulation state, and JIT compilation to enable the execution of LLHD units, as described in Section \ref{sec:execution}.
 
@@ -78,214 +79,203 @@ To be able to perform a simulation, we first need a means to keep track of the g
 \subsubsection{Time and Signals}
 At the base of the simulator, we have a representation of time and signals.
 
-A time unit can be simply represented by three values, representing real-time, delta step and epsilon step. We also note that we have a fixed picosecond granularity in the simulator, and assume that the real-time values stored in the state have already been appropriately converted.
+A time unit can be simply represented by three values, representing real-time, delta step, and epsilon step. We also note that we have a fixed picosecond granularity in the simulator, and assume that the real-time values stored in the state have already been appropriately converted.
 
-For signals on the other hand, we require keeping track of some more information. Each signal can be uniquely identified through its name and owner instance. This enables us to identify signals in cases where their location in the global signal table is unknown. The name in particular is also required to identify the various signals in the generated simulation trace.
+For signals, on the other hand, we require keeping track of some more information. Each signal can be uniquely identified through its name and owner instance. This enables us to identify signals in cases where their location in the global signal table is unknown. The name in particular is also required to identify the various signals in the generated simulation trace.
 
-Each signal also owns a memory region in the heap, where its value is stored. A pointer to such region is always stored for each signal, together with the size (\ie the number of bytes it's type requires to be stored in memory). We keep track of this information for making the signals available to units during unit execution (see Section \ref{sec:execution}), signal changes processing, and trace generation (see Section \ref{sec:trace}).
+Each signal also owns a memory region in the heap, where its value is stored. A pointer to such a region is stored for each signal, together with its size (\ie, the number of bytes its type occupies in memory). We keep track of this information for making signals available to units during their execution (see Section \ref{sec:execution}), to process signal changes, and to generate a trace dump (see Section \ref{sec:trace}).
 
-A signal update always results in a subset of all instances being triggered. To be able to retrieve all of them with ease, without the need of searching each instance for each signal change, we store a list of all sensitive instances here as well. Figure \ref{fig:sig} shows the final shape of the signal structure.
+A signal update always results in a subset of all instances being triggered. To avoid needing to search each instance for each signal change, we store a list of all sensitive instances here as well.
+% Figure \ref{fig:sig} shows the final shape of the signal structure.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.4\textwidth]{gfx/Signal.png}
-    \caption{<PH> The data structure used to represent a signal in the global simulation state}
-    \label{fig:sig}
-\end{figure}
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{gfx/Signal.png}
+%     \caption{<PH> The data structure used to represent a signal in the global simulation state}
+%     \label{fig:sig}
+% \end{figure}
 
 %---
 
 \subsubsection{Instances}
-Each instance represents a “copy“ of a unit, and different instances of the same unit can coexist, with different input and output signals connected to them.
+Each instance represents a “copy“ of a unit, and different instances of the same unit can coexist, with different input and output signals connected to them. We thus keep track of various information about instances, starting from their name, the base unit they instantiate (to retrieve the unit function), as well as the instance's full hierarchical path, built during the state initialization (as discussed in Section \ref{sec:state}).
 
-We thus keep track of various information about instances, starting from their name, the base unit they instantiate (to retrieve the unit function), as well as the instance's full hierarchical path, buildt it during the state initialization (as seen in Section \ref{sec:state}).
+As mentioned, each instance has a set of signals it is sensible to. Those can be either owned by the instance itself, in case of an entity, or be connected through one of the input or output ports. For each of those signals, we store an entry in a local signal table, which contains the pointer to the signal value, a value representing it's offset in the first byte, and its index in the global signal table and instance signal table, to make them easily available to units during their execution. The use of this information will be explained in more detail later. Also note, that this does not correspond to the signal representation described above.
 
-%and placement in the design hierarchy. The latter is achieved by keeping track of the parent instance, thus building a linked tree of the hierarchy, with the root instance on top. Note though, that this was initially used to generate the hierarchical paths during trace generation, but to avoid regenerating the path each time a signal change is dumped, we store the full hierarchical path as a string in the representation of an instance. It is not yet clear if we will require knowledge of the hierarchy of the design at that granularity, thus we left this in the current implementation.
+Entities and processes also require different local states during their execution. In the former case, the only additional local state-keeping required during execution is for the reg operation trigger values contained in the entity: to be able to detect a rising or falling edge of the trigger, the current SSA operand's value is not enough, but we always need information about its value in the previous execution of the instance.
 
-As mentioned, each instance has a set of signals it is sensible to. Those can be either owned by the instance itself, in case of an entity, or be connected through one of the input or output ports. For each of those signals, we store an entry in a local signal table, which contains the pointer to the signal value, a value representing it's offset in the first byte, and its index in the global signal table and instance signal table, in order to make them easily available to units during their execution. The use of this information will be explained in more detail later. Also note, that this does not correspond to the signal representation described above.
+For processes, on the other hand, more information is required: since processes can suspend their execution at any terminator in their body (through a wait operation), we need to keep track of where we need to resume execution. This can be achieved by indexing all the possible resume-points and storing the current index into the local state.
 
-Entities and processes also require different local states during their execution. In the former case, the only additional local state required during execution is for the reg operation trigger values contained in the entity: to be able to detect a rising or falling edge of the trigger, the current SSA operand's value is not enough, but we always need information about its value in the previous execution of the instance.
+Another problem arises with value persistence, namely, since the body is no more fully executed, the process would resume and try accessing undefined values. We avoid that by storing all required values in the process' local state. A detailed description of how this is achieved can be found in Section \ref{sec:execution}. Finally, process suspension can also restrict the sensitivity of the instance to a given subset of its argument signals. This behavior can be represented by storing a flag for each signal in the instance's sensitivity list, indicating if sensitivity to a signal is currently enabled.
 
-For processes on the other hand, more information is required: since processes can suspend their execution at any terminator in their body (through a wait operation), we need to keep track of where we need to resume execution. This can be achieved by indexing all the possible resume points, and storing the current index into the local state.
-
-Another problem arises with value persistence, namely, since the body is no more fully executed, the process would resume and try accessing undefined values. We avoid that by storing all required values in the process' local state, a detailed description of how this is achieved can be found in Section \ref{sec:execution}. Finally, process suspension can also restrict the sensitivity of the instance to given subset of its argument signals. This behavior can be represented by storing a flag for each signal in the instance's sensitivity list, indicating if sensitivity to a signal is currently enabled.
-
-% TODO: add description of scheduled wakeup invalidation (?)
+In some cases, a scheduled wakeup can be invalidated and should thus not be performed. This can happen on wait operations with both delay and signal arguments when one of the observed signals changes before the scheduled wakeup. We can achieve this behavior by keeping track of the timestamp at which we expect the process to wakeup. This way, when we process a scheduled wakeup, we can check if the current timestamp matches the one we expect and skip it if that is not the case. This way, invalidation of a scheduled wakeup can be achieved by setting the expected wakeup time to a timestamp in the past (\eg time-zero).
 
 %---
 
 \subsubsection{Events and the Event Queue}
-An event (or \textit{time-slot}) in our simulator, as we defined at the beginning of this section, contains a list of signal changes rather than only one signal update. If multiple drives to the same signal are scheduled in the same time-step then only the last one in order of execution will be observable in the trace dump. We recall that this does not affect the correctness of the simulation, as the order of the updates scheduled for the same instant is not defined. Within a slot, we represent this by mapping signals to a list of signal updates, for each signal that has changes scheduled in that slot. Since processes can also have a timed suspension, we also keep a list of processes that are scheduled to wake up in that slot.
+An event (or \textit{time-slot}) in our simulator, as we defined at the beginning of this section, contains a list of signal changes rather than only one signal update. If multiple drives to the same signal are scheduled in the same time-step then the observable result will be a combination of all those changes, applied in order of insertion. We recall that this does not affect the correctness of the simulation, as the order of the updates scheduled for the same instant is not defined. Within a slot, we represent this by mapping signals to a list of signal updates, for each signal that has changes scheduled in that slot. Since processes can also have a timed suspension, we also keep a list of the processes scheduled to wake up in that slot.
 
-With a slot as the building block, we can construct the event-queue as a priority queue ordered by the slot's time. Each slot becomes an entry in the queue, and is placed in the correct order on insertion, such that popping the queue is always guaranteed to take the earliest possible event.
+With a slot as the base building block, we can construct the event-queue as a priority queue ordered by the slot's timestamp. Each slot thus becomes an entry in the queue and is placed in the correct position on insertion, such that popping the queue is always guaranteed to take the earliest possible event.
 
 %---
 
 \subsubsection{Global Simulation State and State Initialization}
 \label{sec:state}
-Finally, we can build the global simulation state. Here we store the current simulation time, as well as a global list of signals, the list of instances in the design, and finally the event queue.
+Finally, we can build the global simulation state. Here we store the current simulation time, as well as a global list of signals, the list of the instances present in the design, and finally the event queue.
 
-To initialize the signal and instance structures, we analyze the input design during a first state initialization step, by recursively walking over the units in the design, starting at the top-level (or \textit{root}) of the design. In this step we gather the base information about instances and signals, such as their names and hierarchical paths, while the actual allocation of space for signal values and local states are performed in a later stage (see Section \ref{sec:execution}).
+To initialize the signal and instance structures, we analyze the input design during a first state initialization step, by recursively walking over its units for each inst operation, starting at the top-level (or \textit{root}) of the design. In this step, we gather the base information about instances and signals, such as their names and hierarchical paths, while the actual allocation of space for signal values and local states is performed in a later stage (see Section \ref{sec:execution}).
 
 %-------------------------------------------------------------------------------
 
 \subsection{Unit Execution}
 \label{sec:execution}
-Next, we need a means to emulate the behavior of a circuit. We observe that LLHD shares many similarities with the LLVM IR, and that a mapping from LLHD to LLVM IR is therefore mostly trivial. We can thus define a MLIR conversion pass from our LLHD dialect to the LLVM dialect, and then obtain the various units as callable function pointers, by feeding the converted module to a \textit{Just In Time} (\textit{JIT}) compiler (MLIR's \texttt{ExecutionEngine} in our case). As mentioned in Section \ref{section:mlir}, a conversion pass is mainly composed of a set of patterns that match a specific operation, and define a legal conversion for it. Where we require direct interaction with the simulator's state, \eg for spawning new events, we make use of a small runtime library, containing functions that can be called by the converted code.
+Next, we need a means to emulate the behavior of a circuit. We observe that LLHD shares many similarities with the LLVM IR, and that a mapping from LLHD to LLVM IR is therefore mostly trivial. We can thus define an MLIR conversion pass from our LLHD dialect to the LLVM dialect, and then obtain the various units as callable function pointers, by feeding the converted module to a \textit{Just In Time} (\textit{JIT}) compiler (MLIR's \texttt{ExecutionEngine} in our case). As mentioned in Section \ref{section:mlir}, a conversion pass is mainly composed of a set of patterns that match a specific operation and define a legal conversion for it. Where we require direct interaction with the simulator's state, \eg, for spawning new events, we make use of a small runtime library, containing functions that can be called by the converted code.
 
-In this section we will describe how we can fully map LLHD to LLVM dialect. We leave out a full description of some of the most trivial conversions, such as most of the bitwise operation, that can be mapped one-to-one to the LLVM dialect in our current implementation.
-% Following, we will describe some of the most involving conversions, while the remaining operations have a trivial mapping to LLVM dialect.
+In this section, we will describe how we can fully map LLHD to the LLVM dialect. We leave out a full description of some of the most trivial conversions, such as most of the bitwise operation, that can be mapped one-to-one to the LLVM dialect in our current implementation.
 
 %---
 
 \subsubsection{Mapping LLHD Types to LLVM Types}
 \label{sec:typeconv}
-For integers and tuples we use MLIR's standard dialect types. The conversion for the integer already defined by the standard to LLVM dialect conversion pass. For the tuple type, on the other side, no conversion is defined, and we required to add the conversion from tuples to equivalent LLVM structs.
+For integers and tuples, we use MLIR's standard dialect types. The conversion for the integer is already defined by the standard-to-LLVM dialect conversion pass. For the tuple type, on the other side, no conversion is defined, and we are thus required to add a conversion from tuples to equivalent LLVM structs ourselves.
 
-To map a signal to LLVM dialect, we require keeping track of various important information. First and foremost we need a pointer to the memory region where we store the current signal's value, to be able to probe it. We also require keeping track of a potential offset into the first byte. To fully represent a sub-signal we would need bit-granularity pointers, since integer sub-signals can start at any element (or bit) of the original signal, while memory is generally byte-addressed, so we can represent sub-signals as a tuple containing the pointer to the first byte of the sub-signal, together with an offset into the first byte, representing where in the first byte the sub-signal starts.
+To map a signal to the LLVM dialect, we require keeping track of various important information, as previously mentioned. Furthermore, the result of an extraction operation on a signal is at all effect a new signal, but aliasing part of another signal instead of carrying some value. We will call such signals \textit{sub-signals}. These constructs are useful when only some parts of a signal require to be driven, for example, they enable driving only a single bit of an integer signal, or one element of an array.
+Dealing with sub-signals requires us to make the following considerations:
 
-Further information we keep track of for signals are the index of the signal in the global signal table, and the index of the signal in the local signal table. The former index is useful to retrieve the signal in occasions such as a drive, without needing to rely on arbitrary assumptions at compile time (such as the order the operations are processed during the conversion). The latter is useful to determine the signal's sensitivity flags when converting a wait operation.
+\begin{itemize}
+    \item We don't want to treat sub-signals as a special case: making this distinction would considerably increase the complexity of the conversion because, at the LLHD's IR level, there's no distinction between them. This would thus require some analysis to trace back the origin of the signal, as well as additional logic for all signal operations.
+    \item Sub-signals are local values and do not live outside their unit's scope, as signals do. We thus don't want to store the sub-signals into the global state, as this would increase the complexity in the simulator engine too.
+    \item Sub-signals can start at any element (or bit) of the original signal. This means that to fully represent sub-signals we would need bit-precision pointers. Memory, though, is generally byte-addressed, requiring us to use a representation able to mimic this behavior.
+    \item Global signal information cannot be hard-coded into the unit mapping, as it’s generally not unique, but rather changes depending on which instance of the unit we want to run. We thus need a dynamic way to make each instance-speciﬁc signal table available to the lowered unit.
+\end{itemize}
 
-Signal information cannot be hard-coded into the entity mapping, as it's generally not unique, but rather changes depending on which instance of the unit we want to run. We thus need a dynamic way to make each instance's specific signal table available to the entity lowering. For those reasons, we map a signal to a pointer into a struct containing the information described above, and a unit's signal table (containing both the argument signals and the unit-defined signals) can then mapped to an array of such signal structures, and passed as argument to the converted unit function. This way, each signal becomes a pointer to one of the elements of the argument signal table, and the signal's information can be loaded on-demand where it is needed.
+This requires all signals to have a representation that allows sub-signals to coexist along with global signals, to be local only, and to maintain all the required information to be able to perform drives. Using pointers allows us to hide this distinction from the generated code: local sub-signals can be represented by stack-allocated memory references, while global signals can live on the heap, hiding the distinction from other operations. A signal struct then contains all the information required to deal with both signals and sub-signals. This includes:
 
-% Furthermore, a signal initialization should only happen once, and not be performed each time the unit is run. We thus defer the signal allocation role to the inst operation, as we will describe later, and leave to a sig operation the only role of retrieving the correct signal. As we will describe in more detail in the next section, we expose signal information through function argument, common to all units (entities and processes alike).
+\begin{itemize}
+    \item The pointer referencing the signal's value. In the case of sub-signals, this pointer is obtained by shifting the original signal's pointer to the byte where its value starts.
+    \item The byte-offset. This enables representing the bit-granularity of sub-signal values. We also note that for normal signals, the offset will always be $0$, as their pointers are always generated by a \texttt{malloc} call. The bit-granularity behavior is thus only required because of sub-signals.
+    \item The global signal index. This is necessary to retrieve the signal in the global state when driving. For sub-signals, this matches the original signal's index, so drives can be performed to the correct signal without any further processing.
+    \item The instance signal index. This represents the index of the signal in the instance's local signal table and is used for filtering the signals a process is sensitive to at a given point in time.
+\end{itemize}
 
-% This information is vital in a correct execution in our current implementation. The value pointer is self-explanatory. The byte offset represents the offset of the signal in the first byte of the pointer. x86 systems use a byte-addressed memory model, meaning that we cannot obtain bit-precision granularity with pointers. This is no problem for normal signals, but becomes a problem in the case of sub-signals, generated from extract and shift operations, where a sub-byte offset into a byte is can occur. For example, shifting a signal right by one bit would result require a pointer with one bit offset into the original signal. This is not representable with just pointer, so we represent it as the same pointer, but with a byte-offset of $1$.
+As mentioned in Section \ref{section:llhdmlir}, LLVM arrays offer the flexibility we need for LLHD arrays, and we implemented our own type because we would have been limited to LLVM types, and to generally have an easier time working with that type. When mapping LLHD to LLVM dialect tough, we can now represent LLHD arrays as a one-to-one conversion to LLVM arrays of equivalent types, since we're mapping all LLHD types to LLVM types.
 
-% We require to consider those offsets when probing an integer signal. Thus, the \texttt{llhd.prb} operation can not just be converted to a \texttt{llvm.load} operation, but rather, it requires loading more than the signal's carried value width (we always load one extra byte), right-shift the value by the byte offset, and finally truncate the value to the intended width. We don't require those distinctions when working with structured types (arrays and tuples), as they're already byte-aligned.
+We currently map pointers one-to-one to LLVM dialect pointers. This means though, we currently have no way to represent an extract on an integer pointer, whenever the new pointer should be starting within a byte. In the future, we will need to maintain byte-offset information, similar to signals, for example by converting LLHD pointers to LLVM structs containing a pointer and a bit-offset. We note though, that this seems to be a relatively uncommon case, as it doesn't affect the simulation correctness in any of the examples in our test set.
 
-% To drive a signal, we use one of function from the runtime library mentioned above. Since the signal update doesn't happen immediately, but after a delay, we cannot just store the new value to the signal pointer. So we store it to a newly stack-allocated pointer first, and pass it, together with its width, to the runtime function. This runtime function, \texttt{drive\_signal}, copies this value to an \texttt{llvm::APInt}, a \texttt{C++} class to represent arbitrary-precision integers, and spawns a new event (or adds the change to an existing event if it already exists).
-
-As mentioned in Chapter \ref{ch:ir}, LLVM arrays offer the flexibility we need for LLHD arrays, and we implemented our own type because we would have been limited to LLVM types, and to generally have an easier time working with that type. When mapping LLHD to LLVM dialect tough, we can now represent LLHD arrays as a one-to-one conversion to LLVM arrays of equivalent types, since we're mapping all LLHD types to LLVM types.
-
-We currently map pointers one-to-one to LLVM dialect pointers. This means though, we currently have no way to represent an extract on an integer pointer, whenever the new pointer should be starting within a byte. In the future, we will need to maintain byte-offset information, similar to signals, for example by converting LLHD pointers to LLVM structs containing a pointer and a bit-offset. We note though, that this seems to be a relatively uncommon case, as it doesn't affect the correctness in any of the examples in our test set.
+Figure \ref{fig:types_mapping} recaps the mapping of LLHD types to LLVM dialect types.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\textwidth]{gfx/types mapping.png}
-    \caption[LLHD Types mappings to LLVM dialect types.]{LLHD Types mappings to LLVM dialect types. $T$ represents a legal LLHD type, while $T_1$ its LLVM equivalent.}
+    \includegraphics[width=\textwidth]{gfx/Types mappings.png}
+    \caption[LLHD Types mappings to LLVM dialect types.]{LLHD Types mappings to LLVM dialect types. $T$ represents a legal LLHD sub-type, and $T_1$ represents its LLVM dialect equivalent.}
+    \label{fig:types_mapping}
 \end{figure}
 
 %---
 
 \subsubsection{Unit Conversion}
-To represent entities and processes, we use LLVM functions with a static signature determined at compile-time, which replaces the original unit signature. The new signature contains a pointer to the global state and the signal table array described above. A final argument represents the unit's local state. Here entities and processes will receive a pointer to the respective state type which is determined anew for each unit. More precisely, for entities, the local state will contain the value each reg operation's trigger assumed in its last execution. Processes on the other side require to maintain a local state for all the values that need to be persisted across process suspension, as well as a resume index, and a flag-array containing one entry for each argument signal, indicating if the process is currently sensitive to the respective argument  signal.
+To represent entities and processes, we use LLVM functions with a static signature determined at compile-time, which replaces the original unit signature. The new signature contains a pointer to the global state and an array of signal structures representing the unit's signal table. A final argument represents the unit's local state. Here entities and processes will receive a pointer to the respective state type which is determined anew for each unit. More precisely, for entities, the local state will contain the value each reg operation's trigger assumed in its last execution. Processes on the other side require to maintain a local state for all the values that need to be persisted across process suspension, as well as a resume index, and a flags-array containing one entry for each argument signal, indicating if the process is currently sensible to the respective argument signal.
 
 Since the original signature of the unit is stripped away, the signal operands are now undefined, and those signals reside instead as an element of the new signal table argument. For each of the signals in the signal table, we thus need to replace their uses with a pointer to the correct element in the signal table. We replace each signal operand with a \texttt{llvm.getelementptr} operation to the respective entry in the signal table. For argument signals, this operation is inserted at the beginning of the body, while for signals defined through the sig operation, it can be inserted at the operation's original location, as part of its conversion pattern.
 
-% For signals that were originally part of the unit's signature, a \texttt{llvm.getelementptr} operation into the signal table argument is inserted at the beginning of the unit's body, while \texttt{llhd.sig} operations can be converted to \texttt{getelementptr} operations at their original location.
+To lower entity bodies, we observe that although they are defined to be following a data-flow paradigm, rather than control-flow (meaning the order the instructions appear in doesn't matter, and they should be executed following the \textit{Data-Flow Graph}, in short \textit{DFG}), LLHD still adheres to the SSA dominance condition (all SSA operands are declared before their use). This means that the order of execution dictated by the DFG will always be equivalent to the original order the instructions appear in. Also, at the time of implementing our dialect, there was no way to work around the dominance condition in MLIR, and \texttt{llhd.entity} bodies consequently have to adhere to it to be legal, further enforcing our observation. As a consequence, entity bodies' operations don't require to be re-ordered to follow the DFG, and we can inline them as they are into the converted entity function.
 
-To lower entity bodies, we observe that although they are defined to be following a data-flow paradigm, rather than control-flow (meaning the order the instructions appear in doesn't matter, and they should be executed following the \textit{Data-Flow Graph}, in short \textit{DFG}), LLHD still adheres to the SSA dominance condition (all SSA operands are declared before their use). This means that the order of execution dictated by the DFG will always be equivalent to the original order the instructions appear in. Also, at the time of implementing our dialect, there was no way to work around the dominance condition in MLIR, and \texttt{llhd.entity} bodies consequently have to adhere to it to be legal, further enforcing our observation. As a consequence, entity bodies' operations don't require to be re-ordered to follow the DFG, and we can in-line them as they are into the converted entity function.
-
-Process bodies require some further processing, namely, we need to generate logic for process suspension and resumption. Although process suspension is per se dictated by the \texttt{llhd.wait} operation, and this step seems more adequate to be part of the wait operation's lowering at first glance, we argue that this operation's effect spans across the whole process, making the latter's pattern a good place where to generate such logic. Furthermore, during the execution the process lowering pattern, we have a broader view of the process easily available. In fact, a pattern of a MLIR pass usually receives only information about the operation it is matching, and tracking back information about other operations is not always trivial and sometimes requires arbitrary assumptions (\eg that another operation has not already been converted).
+Process bodies require some further processing, namely, we need to generate logic for process suspension and resumption. Although process suspension is per se dictated by the \texttt{llhd.wait} operation, and this step seems thus more adequate to be part of the wait operation's pattern at first glance, we argue that the effects of this span across the whole process, making the latter's pattern a good place where to generate such logic. Furthermore, during the execution of the process lowering pattern, we have a broader view of the process easily available. In fact, a pattern of an MLIR pass usually receives only information about the operation it is matching, and tracking back information about other operations is not always trivial and sometimes requires arbitrary assumptions (\eg that another operation has not already been converted).
 
 Enabling process suspension and resumption execution requires two main considerations:
 \begin{enumerate}
-    \item We require knowing where in the process' body the execution has to be resumed. We know that suspension can only happen at a block terminator, while resumption can only be at the beginning of a block. We can thus maintain an index, for each resume's target block, and insert a series of new blocks at the beginning of the body. Each of these blocks, we call them \textit{comparison blocks}, compare the current index with one of the possible resume indexes, and then conditionally branches to the target block, in case the index matches, or to the next block otherwise. This mimics the behavior of the LLVM IR \textit{switch} instruction, which is unfortunately missing in the MLIR dialect.
-    \item We require to restore all the values, that the process uses after resumption, to the values they had before suspension. In a first naïve and very conservative implementation, we store each value that “escapes“ its defining block in the process' state, and load them from the local state whenever used outside their defining block. Since suspension can only happen at the end of a block, and resumption can only happen at the beginning of a block, this ensures we always have all the values we need available, at the cost of persisting additional values, which would otherwise not require to be persisted. In the future, approaches such as Temporal Region Analysis could be used to determine which values actually require to be persisted and thus avoid redundant memory allocation and access.
+    \item We require knowing where in the process' body the execution has to be resumed. We know that suspension can only happen at a block terminator, while resumption can only be at the beginning of a block. We can thus maintain an index, for each resume's target block, and insert a series of new blocks at the beginning of the body. Each of these blocks, we call them \textit{comparison-blocks}, compare the current index with one of the possible resume indexes, and then conditionally branches to the target block, in case the index matches, or to the next block otherwise. This mimics the behavior of the LLVM IR \textit{switch} instruction, which is, unfortunately, missing in the MLIR dialect. An example of this can be found in Figure \ref{fig:proclow}.
+    \item We require to restore all the values, that the process uses after resumption, to the values they had before suspension. In a first naïve and very conservative implementation, we store each value that “escapes“ its defining block in the process' state, and load them from the local state whenever used outside their defining block. Since suspension can only happen at the end of a block, and resumption can only happen at the beginning of a block, this ensures we always have all the values we need available, at the cost of persisting additional values, which would otherwise not require to be persisted.  An example of this can be found in Figure \ref{fig:persistlow}. In the future, approaches such as Temporal Region Analysis could be used to determine which values actually require to be persisted and thus avoid redundant memory allocation and access. Another possibility worth exploring would be to use LLVM coroutines, of which we were unaware while implementing this.
 \end{enumerate}
 
-In Figure \ref{fig:proclow} we illustrate a simple process conversion.
-
-\begin{figure}[ht]
+\begin{figure}
     \centering
-    \includegraphics[width=1.1\textwidth]{gfx/ProcConv.png}
-    \caption[A simple example of process suspension logic generation.]{A simple example of process suspension logic generation. First, the resume index is loaded from the state (1). We then compare it against the first possible resume index (2). In case the index matches this value, the execution is resumed at \texttt{bb4}, else the index is compared against the second possible index (\ie $0$) in the second comparison block (3). If that is the case, we are executing the process for the first time, and we jump to \texttt{bb3}. Otherwise, we are in an illegal state and interrupt execution. The resume index is finally updated before the wait operation (4).}
+    \includegraphics[width=\textwidth]{gfx/Resumelow.png}
+    \caption[A simple example of process suspension logic generation.]{A simple example of process suspension logic generation. First, the resume index is loaded from the state (1). We then compare it against the first possible resume index (2). In case the index matches this value, the execution is resumed at \texttt{bb4}, else the index is compared against the second possible index (\ie, $0$) in the second comparison block (3). If that is the case, we are executing the process for the first time, and we jump to \texttt{bb3}. Otherwise, we are in an illegal state and interrupt execution by jumping to \texttt{bb5}. The resume index is finally updated before the wait operation (4). Non-relevant parts of code have been left out for the sake of readability (designated by [...]), as well as the \texttt{llhd.wait} operation conversion.}
     \label{fig:proclow}
 \end{figure}
 
-% To enable execution resumption, we first require to store all relevant values before the process is suspended, and load them back after the process is resumed. As a naïve first approach, we use as criteria to find the values that need persistence, whether they escape their defining block, meaning that we will store in the process state all those values that are used at least once outside the block they are defined in, and then replace all uses outside the defining block with the value loaded from the state. This is enough to ensure all required values are made available after process is resumed, since we cannot suspend execution in the middle of a block, but it introduces some level of redundancy in what values we persist in the state, that we accepted for the sake of simplicity in this first implementation. Figure \ref{fig:proclow} shows a simple example of this intermediate conversion.
-% Finally, we need a means to resume execution at a given block. This can be done by introducing a series of new basic blocks, that we call \textit{comparison blocks}, to compare the current resume index with all possible resume indexes, and conditionally branch to the correct block. In each of those blocks, the conditional branch terminator jumps to the next block on a false, except of the last comparison block, where the target for a false match is an additional dummy block, that interrupts execution, representing an illegal state.
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/Persistlow.png}
+    \caption[A simple example of value persistence logic generation.]{
+        A simple example of value persistence logic generation. We can see that the boolean value appears in the process' local state (1). Since the boolean value escapes its defining block, it is stored into the local state (2) and subsequently loaded from it before it's use in the \texttt{entry} block (3). Non-relevant parts of code have been left out for the sake of readability (designated by [...]), as well as the conversion of the \texttt{llhd.not} and \texttt{llhd.halt} operations.
+    }
+    \label{fig:persistlow}
+\end{figure}
 
-Finally, since we're using the MLIR standard functions, we can directly use the standard dialect's conversion patterns to convert them to LLVM dialect.
+Finally, since we're using the MLIR standard functions, we can directly use the standard dialect's conversion patterns to convert them to the LLVM dialect.
 
 %---
 
 \subsubsection{Instantiation Conversion}
 As mentioned above, for each \texttt{llhd.inst} operation, a “copy“ of the unit is instantiated. This means that we require to also initialize a copy of each of the signals declared by the unit, as well as allocating memory for a new copy of the unit's local state. We accomplish this by generating an initialization function through the instantiation conversion.
 
-In more detail, the \texttt{llhd.inst} conversion pattern walks over the target unit once,  generating \texttt{malloc} calls in the initialization function for each of the declared signals. We also note that we currently allocate double the required space for each of the signals. This is to cover the case of shifting signals, where probing a signal could result in accesses outside of the allocated memory region. Once support for the old LLHD shift instruction is removed, as discussed in Chapter \ref{ch:ir}, we should also be able to reduce the space we allocate for signals.
+In more detail, the \texttt{llhd.inst} conversion pattern walks over the target unit once,  generating \texttt{malloc} calls in the initialization function for each of the declared signals. We also note that we currently allocate double the required space for each of the signals. This is to cover the case of shifting signals, where probing a signal could result in accesses outside of the allocated memory region. Once support for the old LLHD shift instruction is removed, as discussed in Section \ref{section:llhdmlir}, we should also be able to reduce the space we allocate for signals.
 
 Finally, we also generate \texttt{malloc} calls for the unit's local state and store all the generated pointers in the global state through some runtime function calls.
 
-Important to note is that this approach requires us to guarantee that no other operation has been converted before the initialization function generation. Particularly, in the case of units we lose information about the unit kind (wheter it is an entity or process) and signature. Similarly, for signals we lose information about the carried type after the conversion. We thus convert the instantiation operations before anything else, by running a first partial conversion, only processing \texttt{llhd.inst} operations, followed by the full conversion. It is not yet clear if it would be worth to have a separate pass for this step, as it would have no use outside this pipeline.
-
-% We also note that this requires all LLHD operation not to be converted, or we would lose some information about the structure of the unit's body, for example a process will not be distinguishable from an entity once converted, since both become \texttt{llvm.func} operations. To ensure this, we lower all the instantiation operations separately in a partial conversion call, before going on with the conversion of the remaining operations.
-
-% \begin{listing}[ht]
-%     \caption{proc intermediate example}
-%     \inputminted[
-%         frame=lines,
-%         framesep=2mm,
-%         baselinestretch=1.0,
-%         bgcolor=lightgray!10,
-%         fontsize=\footnotesize, linenos
-%     ]{mlir.py:MLIRLexer -x}{examples/proc_lowinit.mlir}
-%     \inputminted[
-%         frame=lines,
-%         framesep=2mm,
-%         baselinestretch=1.0,
-%         bgcolor=lightgray!10,
-%         fontsize=\footnotesize, linenos
-%     ]{mlir.py:MLIRLexer -x}{examples/proc_intermediate.mlir}
-% \end{listing}
-
-%---
+Important to note is that this approach requires us to guarantee that no other operation has been converted before the initialization function generation. Particularly, in the case of units, we lose information about the unit kind (whether it is an entity or a process) and signature. Similarly, for signals, we lose information about the carried type after the conversion. We thus convert the instantiation operations before anything else, by running a first partial conversion, only processing \texttt{llhd.inst} operations, followed by the full conversion. It is not yet clear if it would be worth separating this step in a new MLIR pass, as it would currently have no use outside this pipeline.
 
 \subsubsection{Extraction conversion}
 \label{sec:extrs}
-The extraction operations are between the most complex LLHD operations. They can operate on almost any LLHD type, and the semantics of the LLVM dialect mapping varies slightly for almost each of those types. For integers and structured types, the conversion is straight forward: for integers it is enough to shift the value and truncate it to the desired bit-width. For structured types, we can extract each required element and insert it in a newly defined operand with the desired length. As also explained in Section \ref{sec:typeconv}, for integer and signal pointers we require to change their view of the underlying value with a bit-granularity.
+The extraction operations are among the most complex LLHD operations. They can operate on almost any LLHD type, and the semantics of the LLVM dialect mapping varies slightly for almost all of those types. For integers and structured types, the conversion is straight forward: for integers, it is enough to shift the value and truncate it to the desired bit-width. For structured types, we can extract each required element and insert it in a newly defined value with the desired length. As explained in Section \ref{sec:typeconv}, for integer and signal pointers we require to change their view of the underlying value with a bit-granularity.
 
-Furthermore, the result of an extraction operation on a signal is at all effect a new signal, but aliasing part of another signal instead of actually carrying some value. We will call such signals \textit{sub-signals}. These constructs are useful when only some parts of a signal require to be driven, for example, they enable driving only a single bit of an integer signal, or one element of an array.
+% Furthermore, the result of an extraction operation on a signal is at all effect a new signal, but aliasing part of another signal instead of carrying some value. We will call such signals \textit{sub-signals}. These constructs are useful when only some parts of a signal require to be driven, for example, they enable driving only a single bit of an integer signal, or one element of an array.
 
-Dealing with sub-signals requires us to make the following considerations:
-\begin{itemize}
-    \item We don't want to treat sub-signals as a special case: making this distinction would considerably increase the complexity of the conversion, because at the LLHD's IR level, there's no distinction between them. This would thus require some analysis to trace back the origin of the signal, as well as additional logic for all signal operations.
-    \item Sub-signals are local values and do not live outside their unit's scope, as signals do. We thus don't want to store the sub-signals into the global state, as this would increase the complexity in the simulator too.
-\end{itemize}
+% Dealing with sub-signals requires us to make the following considerations:
+% \begin{itemize}
+%     \item We don't want to treat sub-signals as a special case: making this distinction would considerably increase the complexity of the conversion because, at the LLHD's IR level, there's no distinction between them. This would thus require some analysis to trace back the origin of the signal, as well as additional logic for all signal operations.
+%     \item Sub-signals are local values and do not live outside their unit's scope, as signals do. We thus don't want to store the sub-signals into the global state, as this would increase the complexity in the simulator too.
+% \end{itemize}
 
-This requires all signals to have a representation that allows sub-signals to coexist along normal signals, to be local only, and to maintain all the required information to be able to perform drives.
+% This requires all signals to have a representation that allows sub-signals to coexist along with normal signals, to be local only, and to maintain all the required information to be able to perform drives.
 
-% TODO: fix redundant explanation of signal representation
-Local sub-signals can be represented by stack-allocated memory references, while global signals can live on the heap. A signal struct contains all the information required to deal with both signals and sub-signals. This includes:
+% TODO: fix redundant explanation of signal representation => move to types mapping section!
+% Local sub-signals can be represented by stack-allocated memory references, while global signals can live on the heap. A signal struct contains all the information required to deal with both signals and sub-signals. This includes:
 
-\begin{itemize}
-    \item The pointer referencing the signal's value. In case of sub-signals, this pointer is obtained by shifting the original signal's pointer to the desired location.
-    \item The byte-offset. This enables the bit-granularity of pointers we described before. We also note that for normal signals, the offset will always be $0$, as their pointers are always generated by a \texttt{malloc} call, so the bit-granularity is only required because of sub-signals.
-    \item The global signal index. This is necessary to retrieve the signal in the global state when driving. For sub-signals, this matches the original signal's index, so drives can be performed to the correct signal without any further processing.
-    \item The instance signal index. This represents the index of the signal in the instance's local signal table, and is used for filtering the signals a process is sensitive to at a given point in time.
-\end{itemize}
+% \begin{itemize}
+%     \item The pointer referencing the signal's value. In the case of sub-signals, this pointer is obtained by shifting the original signal's pointer to the desired location.
+%     \item The byte-offset. This enables the bit-granularity of pointers we described before. We also note that for normal signals, the offset will always be $0$, as their pointers are always generated by a \texttt{malloc} call, so the bit-granularity is only required because of sub-signals.
+%     \item The global signal index. This is necessary to retrieve the signal in the global state when driving. For sub-signals, this matches the original signal's index, so drives can be performed to the correct signal without any further processing.
+%     \item The instance signal index. This represents the index of the signal in the instance's local signal table and is used for filtering the signals a process is sensitive to at a given point in time.
+% \end{itemize}
 
-Extraction on signals, pointers and arrays are also expected to be legal when accessing elements outside the bounds of the referenced memory region, in which case, the base value for the given type is returned (\ie $0$ for a 2-valued type such as bit or \textit{X} for a SystemVerilog logic type). This behavior has currently only been implemented for accessing arrays, by introducing additional boundary-checking logic. It is also partially been mitigated by allocating additional space for storing signals, but no logic to test for the correct behavior is present in this case.
+Extraction on signals, pointers, and arrays are also expected to be legal when accessing elements outside the bounds of the referenced memory region or value, in which case, the base value for the given type should be returned (\ie, $0$ for a 2-valued type such as a bit or \textit{X} for a SystemVerilog logic type). This behavior has currently only been implemented for arrays, by introducing additional boundary-checking logic. It is also partially mitigated by allocating additional space for storing signals, but no logic to test for the correct behavior is present in this case.
 
 %---
 
 \subsubsection{Insertion Conversion}
-Insertions operations work on integer, tuple and array types, inserting a slice (or element) into an existing value. The cases of array and tuple insertions can be trivially mapped to LLVM an insertion operation, or, in the case on slice insertion on arrays, a one insertion per element.
+Insertions operations work on integer, tuple, and array types, inserting a slice (or element) into an existing value. The cases of array and tuple insertions can be trivially mapped to an LLVM insertion operations, or, in the case of slice insertion on arrays, one insertion per element.
 
-For integer insertion, we can first mask the original value to set all the affected elements to $1$. Then we extend the slice to the target's width, and shift it such that the slice is at the correct position. Finally, we need to apply a mask to the extended slice, such that it doesn't affect any bits outside the slice, before xor-ing it with the masked target.
+For integer insertion, as shown in Figure \ref{fig:insert_int}, we can first mask the original value to set all the affected elements to $1$. Then we extend the slice to the target's width and shift it such that the slice is at the correct position. Finally, we need to apply a mask to the extended slice, such that it doesn't affect any bits outside the slice, before AND-ing it with the masked target.
 
-% TODO: add a figure?
+\begin{figure}[ht]
+    \includegraphics[width=\textwidth]{gfx/InsertInt.png}
+    \caption[Illustration of the converted insertion semantics on integers.]{Illustration of the converted insertion semantics on integers. The blue areas represent the target value. The red values represents the slice we want to insert. The gray areas represent the values generated through sign extending and shifting the slice to adjust its position. Finally, the green values represent the masks generated to insert the slice.}
+    \label{fig:insert_int}
+\end{figure}
+% TODO: add a figure!
 
 %---
 
 \subsubsection{Probing and Driving Signals}
-Due to the potentially byte-offset of sub-signal values, as previously described, we cannot probe a signal by just loading the value referenced by the signal pointer. Also, we can have a case where a sub-signal value spans only partially over the last byte of the memory region, due to the variable bit-width of integers. This cannot happen to normal signals as they fully use the memory region they define (buffer region apart).
+Due to the potential byte-offset of sub-signal values, as previously described, we cannot probe a signal by just loading the value referenced by the signal pointer. Also, we can have a case where a sub-signal value spans only partially over the last byte of the memory region it is referencing, due to the variable bit-width of integers. This cannot happen to normal signals as they fully use the memory region they define (buffer region apart).
 
-To probe a signal we thus always load the amount of bytes required to represent the integer type in memory plus an additional byte to cover the case of sub-signals partially spanning across bytes. We then shift the loaded value by the given byte-offset, to ensure the loaded value starts at the correct position, and finally truncate the resulting value to the bit-width dictated by the signal's carried type. Figure \ref{fig:sig} shows an example of this process.
+To probe an integer signal we thus always load the number of bytes required to represent the type in memory plus an additional byte to cover the case of sub-signals partially spanning across bytes. We then shift the loaded value by the given byte-offset, to ensure the loaded value starts at the correct position, and finally truncate the resulting value to the bit-width dictated by the signal's carried type. Figure \ref{fig:prb} shows an example of this process.
 
 \begin{figure}[ht]
     \includegraphics[width=\textwidth]{gfx/Probe.png}
-    \caption[<PH> Illustration of the converted probe semantics.]{<PH> Illustration of the converted probe semantics. Here we want to probe an \texttt{i6} sub-signal (red area) of an \texttt{i8} signal (bits $0$
-        through $7$). The gray area represents the buffer region allocated for the signal.}
+    \caption[Illustration of the converted probe semantics.]{Illustration of the converted probe semantics. Here we want to probe an \texttt{i6} sub-signal (red area) of an \texttt{i8} signal (bits $0$
+        through $7$). Finally, the gray area represents the extra buffer region allocated for the signal.}
     \label{fig:prb}
 \end{figure}
 
-Driving a signal requires us to spawn a new event in the event queue of the simulator, rather than directly update the stored signal value. As mentioned before, we interact with the state through a runtime library, and we do the same here. We use a runtime function, \texttt{drive\_signal}, to take the new value to drive, and add it as a change in the event queue, after the defined delay.
+Driving a signal requires us to spawn a new event in the event queue of the simulator, rather than directly update the stored signal value. As mentioned before, we interact with the state through a runtime library, and we do the same here. We use a runtime function, \texttt{drive\_signal}, to take the value to drive and add it as a change in the event queue, after the defined delay.
 
-In the case a gating condition is present on the drive, we also generate additional blocks, to conditionally execute or skip the drive based on the gating condition.
+In the case a gating condition is present on the drive, we also generate additional blocks to conditionally execute or skip the drive based on the gating condition.
 
-A reg operation conditionally drives one value out of a list of triggers and possible values. We can see this operation as a list of comparison blocks, similar to the ones we use for the process resumption logic, leading to a block containing a normal drive operation. The drive's arguments come from the newly generated block arguments, and each comparison block passes the elements of the respective reg-tuple to the target block through their conditional branch operations. This way we can also reuse the drive operation conversion pattern and avoid some redundancy in the pass implementation.
+A reg operation conditionally drives one value out of a list of triggers and possible values. We can see this operation as a list of comparison blocks, similar to the ones we use for the process resumption logic, leading to a block containing a normal drive operation. The drive's arguments come from the newly generated block arguments, and each comparison block passes the elements of the respective reg-tuple to the target block through their conditional branch operations. This way, we can also reuse the drive operation conversion pattern and avoid some redundancy in the pass implementation.
 
 %---
 
@@ -296,24 +286,21 @@ A reg operation conditionally drives one value out of a list of triggers and pos
 
 \subsection{Simulation Trace}
 \label{sec:trace}
-The simulation trace dump is the main output of a simulation. It lists all changes that occurred on the signals during the simulation. Traditionally, a simulator will work with a trace format similar to \textit{VCD}, the \textit{Variable Change Dump} format, which is also part of the SystemVerilog standard \cite{SV2018}. This format can then be used to visualize waveforms in programs such as \textit{GTKWave} \cite{gtkwave}, but has the downside of not being human-readable by itself, and automated comparison is not trivial (though utilities such as \textit{vcddiff} \cite{vcddiff} exist).
+The simulation trace dump is the main output of a simulation. It lists all changes that occurred to the signals during the simulation. Traditionally, a simulator will work with a trace format similar to \textit{VCD}, the \textit{Variable Change Dump} format, which is also part of the SystemVerilog standard \cite{SV2018}. This format can then be used to visualize waveforms in programs such as \textit{GTKWave} \cite{gtkwave}, but has the downside of not being human-readable by itself, and automated comparison is not trivial (though utilities such as \textit{vcddiff} \cite{vcddiff} exist).
 
 We propose a textual trace dump format, which is both human-readable without the aid of additional software, and easy to compare through widely available tools such as the \textit{diff} command-line tool.
 
 
 In this textual representation, we use the following syntax:
 \mint[showspaces, fontsize=\footnotesize]{c}|<timestamp>  <full-signal-hierarchical-path>  <value>|
-\noindent The first element is the full timestamp, reporting the exact time, including delta and epsilon steps separated by one blank space. Next, we report a slash-separated (/) full hierarchical path of the updated signal.
-% where we first print the timestamp of the value change, listing the real-time, delta step and epsilon values separated by one space. Next we can find a slash-separated (/) full hierarchical path of the signal, and finally the value the signal assumes at that time-step. The three elements of the entry are separated by two white spaces.
-Finally, we print the new value in hexadecimal format, with prefixed by \texttt{0x}, and $0$-padded to the nearest byte. Reason for this is mainly to keep a compact and coherent format throughout the whole trace. But this comes at the cost of not being able to distinguish, for example, an \texttt{i1} signal from an \texttt{i8} signal by purely looking at the trace.
+\noindent The first element is the full timestamp, reporting the exact time, including delta and epsilon steps separated by one blank space. Next, we report a slash-separated (/) full hierarchical path of the updated signal. Finally, we print the new value in hexadecimal format, prefixed by \texttt{0x}, and $0$-padded to the nearest byte. The reason for this is mainly to keep a compact and coherent format throughout the whole trace. But this comes at the cost of not being able to distinguish, for example, an \texttt{i1} signal from an \texttt{i8} signal by purely looking at the trace.
+For structured-type signals, we transpose the signal value dump by generating one trace entry for each element of the signal and appending the respective index to the hierarchical path.
 
-For structured-type signals, we transpose the signal value dump by generating one trace entry for each element of the signal, and appending the respective index to the hierarchical path.
+A single signal generates one entry for each instance it is connected to, with the respective hierarchical path. Here we also note that our current implementation, we cannot retrieve the port names in the unit signatures, and we thus have to use the original name of the signal for all the hierarchical paths of the connected instances, rather than the port names.
 
-A single signal generates one entry for each instance it is connected to, with the respective hierarchical path. Here we also note that our current implementation, we cannot retrieve the port names in the unit signatures, and we thus have  to use the original name of the signal for all the hierarchical paths of the connected instances, rather than the port names.
+A signal change also generates an entry in the trace only if the drive causes an actual change to the signal value. If a drive occurs, which does not change the signal value from its previous state, it generates no entry in the trace.
 
-A signal generates an entry in the trace only if a drive causes an actual change to the signal value. If a drive occurs, which does not actually change the signal value, it generates no entry in the trace.
-
-Within the same time-step, we define the order for the entries to follow the lexicographical order by the full hierarchical paths. This allows a more normalized and well-formed comparison between traces.
+Within the same time-step, we define the order for the entries to follow the lexicographical order given by the full hierarchical paths. This allows a more normalized and well-formed comparison between the simulation traces.
 
 Listing \ref{listing:toggle_trace} shows an example of trace for the first $10$ns of simulation of Listing \ref{listing:mlir_toggle}. Note that all the real-time values are listed in picoseconds. This is because we currently have assigned a static granularity of $1$ps for the simulator and don't perform any further formatting for the time values.
 
@@ -329,22 +316,18 @@ Listing \ref{listing:toggle_trace} shows an example of trace for the first $10$n
     ]{c}{examples/trace_toggle.txt}
 \end{listing}
 
-One of the main downsides of this textual representation of the signal dump is its size. In fact, when simulating full designs, this easily reaches multiple Gigabytes in size, which makes human inspection hard, as files of such size cannot be easily loaded in a text editor. Also, as the amount of signals in the design grows, the information gets too dense for an effective human inspection.
+One of the main downsides of this textual representation of the signal dump is its size. When simulating full designs, this easily reaches multiple Gigabytes in size, which makes human inspection hard, as files of such size cannot be easily loaded in a text editor. Also, as the amount of signals in the design grows, the information gets too dense for effective human inspection.
 
 For those reasons, we also propose some variations of this format, that can also be further explored in the future.
 
 \begin{enumerate}
-    \item Limit the traced signals to only the ones at the top level of the design. Those are usually the signals owned by the simulated test-bench, and are often the ones of most interest for human inspection. The rationale for this is that the tested circuit can be seen as a “black-box“, and we can infer its correctness by the correctness of its results (the top-level signals).
-    \item Merge all sub-steps into their real-time-step, such that only the final state of each signal is present for each time-step. This brings the trace closer to a typical VCD trace, where time sub-steps are not listed. Here we also group all signal changes that occur at the same time-step under only one timestamp, as shown in Listing \ref{listing:merged-syntax}. This allows to identify time-steps more easily when visually inspecting the trace.
-    \item Trace only the top-level signals and merge all time sub-steps. This effectively merges the concepts introduced in variations 1. and 2., to further ease visual inspection.
-    \item Filter out default-named helper signals. \texttt{moore} often introduces new helper signals during compilation to fully represent the original design. These will not have a name representative of the signal, but are rather given an SSA ID as any other value in the IR. In non-LLHD simulators though, those signals are not represented, as they're not part of the original design. Filtering them out enables us to perform a comparison against SystemVerilog simulators.
+    \item Limit the traced signals to only the ones at the top level of the design. Those are usually the signals owned by the simulated test-bench and are often the ones of most interest for human inspection. The rationale for this is that the tested circuit can be seen as a “black-box“, and we can infer its correctness by the correctness of its results (the top-level signals).
+    \item Merge all sub-steps into their real-time-step, such that only the final state of each signal is present for each real-time-step. This brings the trace closer to a typical VCD trace, where time sub-steps are not listed. Here we also group all signal changes that occur at the same time-step under only one timestamp, as shown in Listing \ref{listing:merged-syntax}. This allows identifying time-steps more easily when visually inspecting the trace.
+    \item Trace only the top-level signals and merge the time sub-steps. This effectively merges the concepts introduced in variations 1. and 2., to further ease visual inspection.
+    \item Filter out default-named helper signals. \texttt{moore} often introduces new helper signals during compilation to fully represent the original design. These will not have a name representative of the signal but are rather given an SSA ID as any other value in the IR. In non-LLHD simulators though, those signals are not represented, as they are not part of the original design. Filtering them out enables us to perform a comparison against well-established SystemVerilog simulators.
 \end{enumerate}
 
-% A first variation just limits the traced signals to only the ones at the top level of the design. Those are usually the signals owned by the test-bench that is being simulated, and often the ones of most interest when human interaction is necessary.
-
-% A further variation merges all time sub-steps into their real-time step, as shown in Listing \ref{listing:merged-syntax}. Here we list the timestamp of the current time-step only once, followed by all changes for that step. This brings the trace closer to a typical VCD trace, where only real-time step are represented. This also cuts down on the dump size. Here as for the full trace representation, we can restrict the traced format to only the top level. We can finally filter out all helper signals that are created during the compilation of a design to LLHD (those signals will have a standardized name, in our case \textit{sigN}, where \textit{N} is an integer number).
-
-\begin{listing}[ht]
+\begin{listing}
     \caption{The syntax of the merged textual dump format.}
     \label{listing:merged-syntax}
     \centering
@@ -358,5 +341,5 @@ For those reasons, we also propose some variations of this format, that can also
     \end{minipage}
 \end{listing}
 
-We also provide a starting point for a modular tracing infrastructure, with the goal of making it easier to add more formats in the future, such as VCD, to also enable a standard format.
+We also provide a starting point for a modular tracing infrastructure, aimed at making it easier to add more dump formats in the future, such as VCD, which would enable a standard and well-established format.
 

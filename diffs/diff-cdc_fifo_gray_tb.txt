@@ -1,0 +1,20 @@
+3c3
+<   cdc_fifo_gray_tb/dst_clk_i  x
+---
+>   cdc_fifo_gray_tb/dst_clk_i  0x00
+5c5
+<   cdc_fifo_gray_tb/dst_ready_i  x
+---
+>   cdc_fifo_gray_tb/dst_ready_i  0x00
+7,8c7,8
+<   cdc_fifo_gray_tb/dst_valid_o  x
+<   cdc_fifo_gray_tb/src_clk_i  x
+---
+>   cdc_fifo_gray_tb/dst_valid_o  0x00
+>   cdc_fifo_gray_tb/src_clk_i  0x00
+12c12
+<   cdc_fifo_gray_tb/src_valid_i  x
+---
+>   cdc_fifo_gray_tb/src_valid_i  0x00
+15d14
+<   cdc_fifo_gray_tb/dst_valid_o  0x00

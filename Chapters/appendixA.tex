@@ -1,7 +1,7 @@
 \chapter{Diff Listings}
 \label{app:diffs}
 
-This appendix contains the full listing of the differences obtain when running the \texttt{diff} utility on the trace generated through Vivado's simulator (on the left, lines starting with \texttt{>}) against the trace generated with our MLIR-based simulator (on the right, lines starting with \texttt{<}). Note that a listing for the graycode example is not presents, as no diff is generated for that example. Also, due to the large amount of variable don't care values (\texttt{x}) present in the Snitch example, we only list the diff for the first $50$ns for that example.
+This appendix contains the full listing of the differences obtain when running the \texttt{diff} utility on the trace generated through Vivado's simulator (on the left, lines starting with \texttt{<}) against the trace generated with our MLIR-based simulator (on the right, lines starting with \texttt{>}). Note that a listing for the graycode example is not provided, as no diff is generated for that example. Also, due to a large amount of variable “don't care“ values (\texttt{x}) present in the Snitch's trace, we only list the diff for the first $50$ns for that example, but we note that all the remaining changes follow the same pattern as the ones we show, where the differences are all due to the signal \texttt{data\_qdata\_o} receiving \texttt{x} payloads.
 
 \begin{listing}[H]
     \inputminted[
@@ -10,8 +10,8 @@ This appendix contains the full listing of the differences obtain when running t
         baselinestretch=1.0,
         % bgcolor=lightgray!10,
         fontsize=\footnotesize, linenos
-    ]{c}{diffs/diff-cdc_2phase.txt}
-    \caption{Full \texttt{diff} listing for the CDC (fifo) example.}
+    ]{c}{diffs/diff-cdc_fifo_gray_tb.txt}
+    \caption{Full \texttt{diff} listing for the CDC (Gray) example.}
 \end{listing}
 
 \begin{listing}[H]
@@ -21,8 +21,8 @@ This appendix contains the full listing of the differences obtain when running t
         baselinestretch=1.0,
         % bgcolor=lightgray!10,
         fontsize=\footnotesize, linenos
-    ]{c}{diffs/diff-cdc_fifo.txt}
-    \caption{Full \texttt{diff} listing for the CDC (gray) example.}
+    ]{c}{diffs/diff-cdc_2phase_tb.txt}
+    \caption{Full \texttt{diff} listing for the CDC (strobe) example.}
 \end{listing}
 
 \begin{listing}[H]
@@ -32,8 +32,8 @@ This appendix contains the full listing of the differences obtain when running t
         baselinestretch=1.0,
         % bgcolor=lightgray!10,
         fontsize=\footnotesize, linenos
-    ]{c}{diffs/diff-fifo.txt}
-    \caption{Full \texttt{diff} listing for the Fifo Queue example.}
+    ]{c}{diffs/diff-fifo_v3_tb.txt}
+    \caption{Full \texttt{diff} listing for the FIFO Queue example.}
 \end{listing}
 
 \begin{listing}[H]
@@ -43,7 +43,7 @@ This appendix contains the full listing of the differences obtain when running t
         baselinestretch=1.0,
         % bgcolor=lightgray!10,
         fontsize=\footnotesize, linenos
-    ]{c}{diffs/diff-fir.txt}
+    ]{c}{diffs/diff-fir_tb.txt}
     \caption{Full \texttt{diff} listing for the FIR example.}
 \end{listing}
 
@@ -54,7 +54,7 @@ This appendix contains the full listing of the differences obtain when running t
         baselinestretch=1.0,
         % bgcolor=lightgray!10,
         fontsize=\footnotesize, linenos
-    ]{c}{diffs/diff-lfsr.txt}
+    ]{c}{diffs/diff-lfsr_16bit_tb.txt}
     \caption{Full \texttt{diff} listing for the LFSR example.}
 \end{listing}
 
@@ -65,7 +65,7 @@ This appendix contains the full listing of the differences obtain when running t
         baselinestretch=1.0,
         % bgcolor=lightgray!10,
         fontsize=\footnotesize, linenos
-    ]{c}{diffs/diff-lzc.txt}
+    ]{c}{diffs/diff-lzc_tb.txt}
     \caption{Full \texttt{diff} listing for the LZC example.}
 \end{listing}
 
@@ -76,7 +76,7 @@ This appendix contains the full listing of the differences obtain when running t
         baselinestretch=1.0,
         % bgcolor=lightgray!10,
         fontsize=\footnotesize, linenos
-    ]{c}{diffs/diff-rr.txt}
+    ]{c}{diffs/diff-rr_arb_tree_tb.txt}
     \caption{Full \texttt{diff} listing for the RR Arbiter example.}
 \end{listing}
 
@@ -88,7 +88,7 @@ This appendix contains the full listing of the differences obtain when running t
         baselinestretch=1.0,
         % bgcolor=lightgray!10,
         fontsize=\footnotesize, linenos
-    ]{c}{diffs/diff-snitch.txt}
+    ]{c}{diffs/diff-snitch_tb.txt}
     \caption[Full \texttt{diff} listing for the Snitch example.]{Full \texttt{diff} listing for the Snitch example. Note that due to the amount of variable don't care (\texttt{x} values, we only report the differences for the first $50$ns of simulation for this example. We also note that the remaining differences follow the pattern shown in this listing, and all differ either because of an \texttt{x} value, or are a consequence of one of those values.}
 \end{listing}
 
@@ -99,6 +99,6 @@ This appendix contains the full listing of the differences obtain when running t
         baselinestretch=1.0,
         % bgcolor=lightgray!10,
         fontsize=\footnotesize, linenos
-    ]{c}{diffs/diff-stream_delay.txt}
+    ]{c}{diffs/diff-stream_delay_tb.txt}
     \caption{Full \texttt{diff} listing for the Stream Delayer example.}
 \end{listing}

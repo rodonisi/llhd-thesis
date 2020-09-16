@@ -1,0 +1,42 @@
+18c18
+<   snitch_tb/clk_i  x
+---
+>   snitch_tb/clk_i  0x00
+25c25
+<   snitch_tb/data_qdata_o  0xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+---
+>   snitch_tb/data_qdata_o  0x0000000000000000
+31,32c31,32
+<   snitch_tb/inst_addr_o  x
+<   snitch_tb/inst_data_i  x
+---
+>   snitch_tb/inst_addr_o  0x00000000
+>   snitch_tb/inst_data_i  0x00000000
+34c34
+<   snitch_tb/inst_valid_o  x
+---
+>   snitch_tb/inst_valid_o  0x01
+43d42
+<   snitch_tb/inst_valid_o  0x01
+51d49
+<   snitch_tb/data_qdata_o  0xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx00000000
+59d56
+<   snitch_tb/data_qdata_o  0x0000000000000000
+95c92
+<   snitch_tb/data_qdata_o  x00000000000000000000000000000000xxxxxxxxxxxxxxxxxxxxxxxx
+---
+>   snitch_tb/data_qdata_o  0x0000000000000000
+107d103
+<   snitch_tb/data_qdata_o  0x0000000000000000
+152c148
+<   snitch_tb/data_qdata_o  x00000000000000000000000000000000xxxxxxxxxxxxxxxx
+---
+>   snitch_tb/data_qdata_o  0x0000000000000000
+164d159
+<   snitch_tb/data_qdata_o  0x0000000000000000
+211c206
+<   snitch_tb/data_qdata_o  x00000000000000000000000000000000xxxxxxxx
+---
+>   snitch_tb/data_qdata_o  0x0000000000000000
+223d217
+<   snitch_tb/data_qdata_o  0x0000000000000000

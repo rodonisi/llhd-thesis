@@ -116,36 +116,130 @@
 @Misc{llhd.io,
   howpublished = {\url{http://llhd.io}},
   note         = {[Online; accessed 31-August-2020]},
+  title        = {LLHD},
 }
 
 @Misc{moore,
   howpublished = {\url{https://github.com/fabianschuiki/moore}},
+  title        = {Moore},
   year         = {[Online; accessed 31-August-2020]},
 }
 
 @Misc{llhd-sim,
   howpublished = {\url{https://github.com/fabianschuiki/llhd-sim}},
+  title        = {LLHD-Sim},
   year         = {[Online; accessed 31-August-2020]},
 }
 
 @Misc{tablegen,
   howpublished = {\url{https://llvm.org/docs/TableGen/}},
+  title        = {TableGen},
   year         = {[Online; accessed 31-August-2020]},
 }
 
 @Misc{gtkwave,
   howpublished = {\url{http://gtkwave.sourceforge.net/}},
+  title        = {GTKWave},
   year         = {[Online; accessed 31-August-2020]},
 }
 
 @Misc{vcddiff,
   howpublished = {\url{https://github.com/palmer-dabbelt/vcddiff}},
+  title        = {vcddiff},
   year         = {[Online; accessed 31-August-2020]},
 }
 
 @Misc{vivado,
   howpublished = {\url{https://www.xilinx.com/products/design-tools/vivado.html}},
+  title        = {Xilinx Vivado},
   year         = {[Online; accessed 31-August-2020]},
+}
+
+@Misc{Neuendorffer,
+  author       = {Stephen Neuendorffer},
+  howpublished = {\url{https://github.com/llvm/circt/blob/master/docs/Charter.md}},
+  title        = {CIRCT Charter},
+  year         = {[Online; accessed 10-September-2020]},
+}
+@inproceedings{Sutherland2006APF,
+  title={A Proposal for a Standard Synthesizable Subset for SystemVerilog-2005: What the IEEE Failed to Define},
+  author={S. Sutherland},
+  year={2006}
+}
+@Misc{Bosio2008,
+  author = {Alberto Bosio and Giorgio Di Natale},
+  title  = {LIFTING: A Flexible Open-Source Fault Simulator},
+  year   = {2008},
+  doi    = {10.1109/ats.2008.17},
+}
+
+@Article{Meyer2016,
+  author      = {Steven Meyer},
+  title       = {CVC Verilog Compiler -- Fast Complex Language Compilers Can be Simple},
+  abstract    = {This paper explains how to develop Verilog hardware description language (HDL) optimized flow graph compiled simulators. It is claimed that the methods and algorithms described here can be applied in the development of flow graph compilers for other complex computer languages. The method uses the von Neumann computer architecture (MRAM model) as the best abstract model of computation and uses comparison and selection of alternative machine code sequences to utilize modern processor low level parallelism. By using the anti formalist method described here, the fastest available full IEEE 1364 2005 Verilog HDL standard simulators has been developed. The compiler only required 95,000 lines of C code and two developers. This paper explains how such a compiled simulator validates the anti-formalism computer science methodology best expressed by Peter Naur's datalogy and provides specific guidelines for applying the method. Development history from a slow interpreter into a fast flow graph based machine code compiled simulator is described. The failure of initial efforts that tried to convert a full 1364 compliant interpreter into interpreted execution of possibly auto generated virtual machines is discussed. The argument that fast Verilog simulation requires detail removing abstraction is shown to be incorrect. Reasons parallel GPU Verilog simulation has not succeeded are given.},
+  date        = {2016-03-26},
+  eprint      = {1603.08059},
+  eprintclass = {cs.PL},
+  eprinttype  = {arXiv},
+  file        = {:http\://arxiv.org/pdf/1603.08059v2:PDF},
+  keywords    = {cs.PL, D.3.4; B.6.3},
+}
+
+@InProceedings{Grossman2013,
+  author          = {J.P. Grossman and Brian Towles and Joseph A. Bank and David E. Shaw},
+  title           = {The role of Cascade, a cycle-based simulation infrastructure, in designing the Anton special-purpose supercomputers},
+  year            = {2013},
+  pages           = {1--9},
+  publisher       = {IEEE},
+  abstract        = {Cascade is a cycle-based C++ simulation infrastructure used in the design and verification of two successive versions of Anton, a specialized machine designed for high-speed molecular dynamics computation. Cascade was engineered to address the size and speed challenges inherent in simulating massively parallel special-purpose machines. It provides a lightweight programming interface, rich debugging support, tight Verilog integration, fast multithreaded execution, and low memory overhead. Here, we describe the core features of Cascade that proved most valuable for our simulation efforts.},
+  date            = {29 May-7 June 2013},
+  doi             = {10.1145/2463209.2488884},
+  eventdate       = {29 May-7 June 2013},
+  eventtitleaddon = {Austin, TX},
+  file            = {:https\://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6560715:PDF},
+  isbn            = {978-1-4503-2071-9},
+  issn            = {0738-100X},
+  journaltitle    = {2013 50th ACM/EDAC/IEEE Design Automation Conference (DAC)},
+  keywords        = {Ports (Computers), Registers, Clocks, Hardware design languages, Reflection, Hardware, Debugging, Cascade, Anton, cycle-based simulation, reflection},
+  location        = {Austin, TX},
+}
+
+@Misc{verilator,
+  howpublished = {\url{https://www.veripool.org/wiki/verilator}},
+  title        = {Verilator},
+  year         = {[Online; accessed 12-Semptember-2020]},
+}
+
+@Misc{systemc,
+  howpublished = {\url{https://www.accellera.org/downloads/standards/systemc}},
+  title        = {SystemC},
+  year         = {[Online; accessed 14-September-2020]},
+}
+
+@Misc{icarus,
+  howpublished = {\url{http://iverilog.icarus.com}},
+  title        = {Icarus Verilog},
+  year         = {[Online; accessed 14-September-2020]},
+}
+
+@Article{V2006,
+  title        = {IEEE Standard for Verilog Hardware Description Language},
+  year         = {2006},
+  pages        = {1--590},
+  abstract     = {The Verilog hardware description language (HDL) is defined in this standard. Verilog HDL is a formal notation intended for use in all phases of the creation of electronic systems. Because it is both machine-readable and human-readable, it supports the development, verification, synthesis, and testing of hardware designs; the communication of hardware design data; and the maintenance, modification, and procurement of hardware. The primary audiences for this standard are the implementers of tools supporting the language and advanced users of the language.},
+  date         = {7 April 2006},
+  doi          = {10.1109/IEEESTD.2006.99495},
+  file         = {:https\://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=1620780:PDF},
+  isbn         = {978-0-7381-4851-9},
+  journaltitle = {IEEE Std 1364-2005 (Revision of IEEE Std 1364-2001)},
+  keywords     = {Hardware design languages, IEEE Standards, Hardware, Patents, Solid modeling, computer, computer languages, digital systems, electronic systems, hardware, hardware description languages, hardware design, HDL, PLI, programming language interface, Verilog, Verilog HDL, Verilog P},
+  publisher    = {IEEE},
+}
+
+@Misc{vcdvcd,
+  howpublished = {\url{https://github.com/cirosantilli/vcdvcd}},
+  title        = {vcdvcd},
+  year         = {[Online; accessed 15-September-2020]},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}

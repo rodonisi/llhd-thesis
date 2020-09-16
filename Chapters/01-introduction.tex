@@ -1,7 +1,15 @@
 \chapter{Introduction}
 \label{ch:intro}
+The modern digital circuit design workflow suffers from deep isolation and redundancy problems. Each design has to pass through a long chain of tools on their way to becoming silicon, such as simulators, formal verifiers, synthesizers, and many others. The tools in a common workflow are usually monolithic and closed-source, often coming from different vendors, to rule out systematic sources of errors \cite{Schuiki2020}. Many common abstractions are used in the internal representations of such tools, often only on an informal level rather than explicitly applied in the various pipelines \cite{Neuendorffer}. Furthermore, since each tool has grown in isolation, each re-implements those abstractions from the ground up, introducing unnecessary redundancy.
 
-% proprietary tools
-% sparse tools
-% redundant tools
-% community involvment, circt
+Hardware Description Languages (HDLs) such as SystemVerilog \cite{SV2018} and VHDL \cite{VHDL2009} are commonly used as input of such tools. Their sheer complexity and sometimes absent specification (for example, describing what constructs are synthesizable \cite{Sutherland2006APF}), cause tools from various vendors to interpret them differently in their implementation, leading to inconsistent behavior between different tools. As a result, hardware designers have to resort to a "safe subset" of such languages, known to produce the expected behavior in all the tools of their workflow and precluding the use of higher-level constructs of those languages.
+
+New tools face the challenge of tackling these vast and complex specifications, requiring to build their own frontends and internal representations from the ground up. This leads new tools restricting themselves to a subset of the languages, thus being less competitive against ones that have been developed and optimized over decades.
+In particular, to our knowledge, no open-source simulator offers extensive support for the SystemVerilog standard, but rather restrict themselves to either synthesizable constructs, or the IEEE Std 1364-2005 Verilog standard \cite{V2006}. We can see an example of this in Verilator \cite{verilator}, an open-source simulator popular for its speed, but limited to only synthesizable SystemVerilog constructs.
+
+LLHD, the Low-Level Hardware Description IR, aims to solve these redundancy and agreement problems by offering a common representation for HDLs in their entirety, which is simple, free from ambiguities, and can be used across the entire HDL toolchain. MLIR, on the other hand, offers an extensive infrastructure to implement LLHD, allowing it to easily interact with both existing and future abstractions and tools, also profiting from an ever-growing and passionate community.
+
+With this thesis, we propose an open-source LLHD representation in MLIR, achieved through the creation of a \textit{dialect}. Furthermore, we show the correctness of this representation and its benefits, by implementing a simulator able to emulate the behavior of examples as complex as a RISC-V processor core and even running up to $1.5\times$ faster than a commercial simulator, and otherwise being only $3.2\times$ slower on average.
+
+
+

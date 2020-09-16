@@ -1,0 +1,14 @@
+2c2
+<   fir_tb/CLK  x
+---
+>   fir_tb/CLK  0x00
+8c8
+<   fir_tb/Y  x
+---
+>   fir_tb/Y  0x0000
+12a13
+>   fir_tb/Y  0x08ee
+16a18
+>   fir_tb/Y  0x11e5
+18a21
+>   fir_tb/Y  0x1ad3

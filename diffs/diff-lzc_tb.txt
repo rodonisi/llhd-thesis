@@ -1,0 +1,12 @@
+2,5c2,5
+<   lzc_tb/clk_i  x
+<   lzc_tb/cnt_o  x
+<   lzc_tb/empty_o  x
+<   lzc_tb/in_i  x
+---
+>   lzc_tb/clk_i  0x00
+>   lzc_tb/cnt_o  0x0f
+>   lzc_tb/empty_o  0x01
+>   lzc_tb/in_i  0x0000
+8d7
+<   lzc_tb/cnt_o  0x0f
