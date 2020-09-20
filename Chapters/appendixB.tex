@@ -1,6 +1,6 @@
 \chapter{Timing Tables}
 \label{app:timings}
-This appendix contains the raw timing results, which averages are reported in Chapter \ref{ch:eval}. For our MLIR-based simulator, we also report detailed timings for the various stages of the simulation, for each example and for both the first prototype and the (slightly optimized) second prototype.
+This appendix contains the raw timing results, which averages are reported in Chapter~\ref{ch:eval}. For our MLIR-based simulator, we also report detailed timings for the various stages of the simulation, for each example and both the first prototype and the (slightly optimized) second prototype.
 
 \section{Reference Simulators Timings}
 
@@ -116,7 +116,8 @@ This appendix contains the raw timing results, which averages are reported in Ch
             612.59             & 0                         & 0                         & 64                         & 461                        & 87.59                  \\
             617.6              & 0                         & 0                         & 64                         & 467                        & 86.6                   \\
             631.92             & 0                         & 0                         & 66                         & 462                        & 103.92                 \\
-            619.63             & 0                         & 0                         & 63                         & 467                        & 89.63                  \\
+            627.38             & 0                         & 0                         & 66                         & 472                        & 89.38                  \\
+            619.48             & 0                         & 0                         & 63                         & 467                        & 89.48                  \\
             \bottomrule
         \end{tabular}
     }
@@ -320,6 +321,8 @@ This appendix contains the raw timing results, which averages are reported in Ch
     \caption{Detailed timings report for the Stream Delayer example.}
 \end{table}
 
+%-------------------------------------------------------------------------------
+
 \clearpage
 \subsection{Optimized Prototype}
 
@@ -330,16 +333,16 @@ This appendix contains the raw timing results, which averages are reported in Ch
             \toprule
             \textbf{Total [s]} & \textbf{Init phase [s]} & \begin{tabular}[c]{@{}l@{}}\textbf{Allocation}\\\textbf{phase [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Signals}\\\textbf{update [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Instances}\\\textbf{execution [s]}\end{tabular} & \textbf{Remainder [s]} \\
             \toprule
-            32.27              & 0                       & 0                          & 9                          & 18                         & 5.27                   \\
-            32.54              & 0                       & 0                          & 9                          & 19                         & 4.54                   \\
-            32.16              & 0                       & 0                          & 9                          & 19                         & 4.16                   \\
-            32.19              & 0                       & 0                          & 9                          & 18                         & 5.19                   \\
-            32.11              & 0                       & 0                          & 9                          & 18                         & 5.11                   \\
-            32.11              & 0                       & 0                          & 9                          & 18                         & 5.11                   \\
-            32.06              & 0                       & 0                          & 9                          & 18                         & 5.06                   \\
-            32.47              & 0                       & 0                          & 9                          & 19                         & 4.47                   \\
-            32.79              & 0                       & 0                          & 9                          & 19                         & 4.79                   \\
-            32.67              & 0                       & 0                          & 9                          & 18                         & 5.67                   \\
+            36.26              & 0                       & 0                          & 10                         & 17                         & 9.26                   \\
+            36.11              & 0                       & 0                          & 10                         & 17                         & 9.11                   \\
+            36.31              & 0                       & 0                          & 10                         & 17                         & 9.31                   \\
+            36.1               & 0                       & 0                          & 10                         & 17                         & 9.1                    \\
+            35.77              & 0                       & 0                          & 10                         & 17                         & 8.77                   \\
+            36                 & 0                       & 0                          & 10                         & 17                         & 9                      \\
+            36.08              & 0                       & 0                          & 10                         & 17                         & 9.08                   \\
+            36.29              & 0                       & 0                          & 10                         & 17                         & 9.29                   \\
+            36.27              & 0                       & 0                          & 10                         & 17                         & 9.27                   \\
+            36.34              & 0                       & 0                          & 10                         & 17                         & 9.34                   \\
             \bottomrule
         \end{tabular}
     }
@@ -353,16 +356,16 @@ This appendix contains the raw timing results, which averages are reported in Ch
             \toprule
             \textbf{Total [s]} & \textbf{Init phase [s]} & \begin{tabular}[c]{@{}l@{}}\textbf{Allocation}\\\textbf{phase [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Signals}\\\textbf{update [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Instances}\\\textbf{execution [s]}\end{tabular} & \textbf{Remainder [s]} \\
             \toprule
-            41.36              & 0                       & 0                          & 12                         & 24                         & 5.36                   \\
-            41.93              & 0                       & 0                          & 12                         & 24                         & 5.93                   \\
-            42.04              & 0                       & 0                          & 12                         & 24                         & 6.04                   \\
-            42.04              & 0                       & 0                          & 12                         & 24                         & 6.04                   \\
-            41.12              & 0                       & 0                          & 11                         & 24                         & 6.12                   \\
-            41.85              & 0                       & 0                          & 12                         & 24                         & 5.85                   \\
-            41.69              & 0                       & 0                          & 12                         & 24                         & 5.69                   \\
-            41.76              & 0                       & 0                          & 12                         & 24                         & 5.76                   \\
-            41.5               & 0                       & 0                          & 12                         & 24                         & 5.5                    \\
-            42.08              & 0                       & 0                          & 12                         & 24                         & 6.08                   \\
+            45.19              & 0                       & 0                          & 13                         & 23                         & 9.19                   \\
+            44.63              & 0                       & 0                          & 13                         & 23                         & 8.63                   \\
+            45.00              & 0                       & 0                          & 13                         & 23                         & 9                      \\
+            44.15              & 0                       & 0                          & 13                         & 23                         & 8.15                   \\
+            44.96              & 0                       & 0                          & 13                         & 23                         & 8.96                   \\
+            44.21              & 0                       & 0                          & 13                         & 23                         & 8.21                   \\
+            44.13              & 0                       & 0                          & 13                         & 23                         & 8.13                   \\
+            44.68              & 0                       & 0                          & 13                         & 23                         & 8.68                   \\
+            44.91              & 0                       & 0                          & 13                         & 23                         & 8.91                   \\
+            45.13              & 0                       & 0                          & 13                         & 23                         & 9.13                   \\
             \bottomrule
         \end{tabular}
     }
@@ -377,16 +380,16 @@ This appendix contains the raw timing results, which averages are reported in Ch
             \toprule
             \textbf{Total [s]} & \textbf{Init phase [s]} & \begin{tabular}[c]{@{}l@{}}\textbf{Allocation}\\\textbf{phase [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Signals}\\\textbf{update [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Instances}\\\textbf{execution [s]}\end{tabular} & \textbf{Remainder [s]} \\
             \toprule
-            12.28              & 0                       & 0                          & 4                          & 6                          & 2.28                   \\
-            12.24              & 0                       & 0                          & 4                          & 6                          & 2.24                   \\
-            12.33              & 0                       & 0                          & 4                          & 6                          & 2.33                   \\
-            12.28              & 0                       & 0                          & 3                          & 6                          & 3.28                   \\
-            12.39              & 0                       & 0                          & 4                          & 6                          & 2.39                   \\
-            12.43              & 0                       & 0                          & 4                          & 6                          & 2.43                   \\
-            12.29              & 0                       & 0                          & 4                          & 6                          & 2.29                   \\
-            12.23              & 0                       & 0                          & 3                          & 6                          & 3.23                   \\
-            12.49              & 0                       & 0                          & 4                          & 6                          & 2.49                   \\
-            12.32              & 0                       & 0                          & 3                          & 6                          & 3.32                   \\
+            11.59              & 0                       & 0                          & 3                          & 5                          & 3.59                   \\
+            11.54              & 0                       & 0                          & 3                          & 5                          & 3.54                   \\
+            11.54              & 0                       & 0                          & 3                          & 5                          & 3.54                   \\
+            11.57              & 0                       & 0                          & 3                          & 5                          & 3.57                   \\
+            11.65              & 0                       & 0                          & 3                          & 5                          & 3.65                   \\
+            11.69              & 0                       & 0                          & 3                          & 5                          & 3.69                   \\
+            11.58              & 0                       & 0                          & 3                          & 5                          & 3.58                   \\
+            11.77              & 0                       & 0                          & 3                          & 5                          & 3.77                   \\
+            11.64              & 0                       & 0                          & 3                          & 5                          & 3.64                   \\
+            11.89              & 0                       & 0                          & 3                          & 5                          & 3.89                   \\
             \bottomrule
         \end{tabular}
     }
@@ -400,16 +403,16 @@ This appendix contains the raw timing results, which averages are reported in Ch
             \toprule
             \textbf{Total [s]} & \textbf{Init phase [s]} & \begin{tabular}[c]{@{}l@{}}\textbf{Allocation}\\\textbf{phase [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Signals}\\\textbf{update [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Instances}\\\textbf{execution [s]}\end{tabular} & \textbf{Remainder [s]} \\
             \toprule
-            73.02              & 0                       & 0                          & 23                         & 41                         & 9.02                   \\
-            73.4               & 0                       & 0                          & 23                         & 41                         & 9.4                    \\
-            72.73              & 0                       & 0                          & 22                         & 41                         & 9.73                   \\
-            72.31              & 0                       & 0                          & 22                         & 41                         & 9.31                   \\
-            73.13              & 0                       & 0                          & 23                         & 41                         & 9.13                   \\
-            74.2               & 0                       & 0                          & 24                         & 41                         & 9.2                    \\
-            72.81              & 0                       & 0                          & 23                         & 41                         & 8.81                   \\
-            72.31              & 0                       & 0                          & 22                         & 41                         & 9.31                   \\
-            73.52              & 0                       & 0                          & 23                         & 41                         & 9.52                   \\
-            73.25              & 0                       & 0                          & 22                         & 41                         & 10.25                  \\
+            73.17              & 0                       & 0                          & 17                         & 39                         & 17.17                  \\
+            72.42              & 0                       & 0                          & 17                         & 39                         & 16.42                  \\
+            72.78              & 0                       & 0                          & 17                         & 39                         & 16.78                  \\
+            72.83              & 0                       & 0                          & 17                         & 39                         & 16.83                  \\
+            72.39              & 0                       & 0                          & 17                         & 39                         & 16.39                  \\
+            72.75              & 0                       & 0                          & 17                         & 39                         & 16.75                  \\
+            74.42              & 0                       & 0                          & 18                         & 39                         & 17.42                  \\
+            74.02              & 0                       & 0                          & 18                         & 39                         & 17.02                  \\
+            72.56              & 0                       & 0                          & 17                         & 39                         & 16.56                  \\
+            72.23              & 0                       & 0                          & 17                         & 39                         & 16.23                  \\
             \bottomrule
         \end{tabular}
     }
@@ -423,16 +426,16 @@ This appendix contains the raw timing results, which averages are reported in Ch
             \toprule
             \textbf{Total [s]} & \textbf{Init phase [s]} & \begin{tabular}[c]{@{}l@{}}\textbf{Allocation}\\\textbf{phase [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Signals}\\\textbf{update [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Instances}\\\textbf{execution [s]}\end{tabular} & \textbf{Remainder [s]} \\
             \toprule
-            18.13              & 0                       & 0                          & 5                          & 10                         & 3.13                   \\
-            18.29              & 0                       & 0                          & 5                          & 10                         & 3.29                   \\
-            18.27              & 0                       & 0                          & 5                          & 10                         & 3.27                   \\
-            18.55              & 0                       & 0                          & 5                          & 10                         & 3.55                   \\
-            18.47              & 0                       & 0                          & 5                          & 10                         & 3.47                   \\
-            18.42              & 0                       & 0                          & 5                          & 10                         & 3.42                   \\
-            18.26              & 0                       & 0                          & 5                          & 10                         & 3.26                   \\
-            18.38              & 0                       & 0                          & 5                          & 10                         & 3.38                   \\
-            18.34              & 0                       & 0                          & 5                          & 10                         & 3.34                   \\
-            18.45              & 0                       & 0                          & 5                          & 10                         & 3.45                   \\
+            19.19              & 0                       & 0                          & 4                          & 11                         & 4.19                   \\
+            19.48              & 0                       & 0                          & 4                          & 11                         & 4.48                   \\
+            19.13              & 0                       & 0                          & 4                          & 11                         & 4.13                   \\
+            19.27              & 0                       & 0                          & 4                          & 11                         & 4.27                   \\
+            19.25              & 0                       & 0                          & 4                          & 11                         & 4.25                   \\
+            19.22              & 0                       & 0                          & 4                          & 11                         & 4.22                   \\
+            19.18              & 0                       & 0                          & 4                          & 11                         & 4.18                   \\
+            19.36              & 0                       & 0                          & 4                          & 11                         & 4.36                   \\
+            19.06              & 0                       & 0                          & 4                          & 11                         & 4.06                   \\
+            19.22              & 0                       & 0                          & 4                          & 11                         & 4.22                   \\
             \bottomrule
         \end{tabular}
     }
@@ -446,16 +449,16 @@ This appendix contains the raw timing results, which averages are reported in Ch
             \toprule
             \textbf{Total [s]} & \begin{tabular}[c]{@{}l@{}}\textbf{Init}\\\textbf{phase [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Allocation}\\\textbf{phase [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Signals}\\\textbf{update [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Instances}\\\textbf{execution [s]}\end{tabular} & \textbf{Remainder [s]} \\
             \toprule
-            36.00              & 0                          & 0                          & 8                          & 18                         & 10                     \\
-            35.67              & 0                          & 0                          & 8                          & 17                         & 10.67                  \\
-            35.99              & 0                          & 0                          & 9                          & 17                         & 9.99                   \\
-            35.91              & 0                          & 0                          & 9                          & 17                         & 9.91                   \\
-            36.38              & 0                          & 0                          & 9                          & 18                         & 9.38                   \\
-            35.86              & 0                          & 0                          & 9                          & 18                         & 8.86                   \\
-            36.37              & 0                          & 0                          & 9                          & 18                         & 9.37                   \\
-            35.84              & 0                          & 0                          & 8                          & 18                         & 9.84                   \\
-            35.98              & 0                          & 0                          & 9                          & 18                         & 8.98                   \\
-            35.74              & 0                          & 0                          & 8                          & 18                         & 9.74                   \\
+            36.65              & 0                          & 0                          & 8                          & 17                         & 11.65                  \\
+            36.77              & 0                          & 0                          & 8                          & 17                         & 11.77                  \\
+            36.72              & 0                          & 0                          & 9                          & 17                         & 10.72                  \\
+            36.91              & 0                          & 0                          & 8                          & 17                         & 11.91                  \\
+            37.11              & 0                          & 0                          & 8                          & 17                         & 12.11                  \\
+            36.19              & 0                          & 0                          & 8                          & 17                         & 11.19                  \\
+            36.98              & 0                          & 0                          & 8                          & 17                         & 11.98                  \\
+            37.51              & 0                          & 0                          & 8                          & 17                         & 12.51                  \\
+            36.24              & 0                          & 0                          & 8                          & 16                         & 12.24                  \\
+            37.61              & 0                          & 0                          & 9                          & 17                         & 11.61                  \\
             \bottomrule
         \end{tabular}
     }
@@ -469,16 +472,16 @@ This appendix contains the raw timing results, which averages are reported in Ch
             \toprule
             \textbf{Total [s]} & \begin{tabular}[c]{@{}l@{}}\textbf{Init}\\\textbf{phase [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Allocation}\\\textbf{phase [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Signals}\\\textbf{update [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Instances}\\\textbf{execution [s]}\end{tabular} & \textbf{Remainder [s]} \\
             \toprule
-            38.61              & 0                          & 0                          & 16                         & 20                         & 2.61                   \\
-            38.24              & 0                          & 0                          & 15                         & 20                         & 3.24                   \\
-            39.62              & 0                          & 0                          & 17                         & 20                         & 2.62                   \\
-            38.48              & 0                          & 0                          & 15                         & 20                         & 3.48                   \\
-            38.09              & 0                          & 0                          & 15                         & 20                         & 3.09                   \\
-            37.97              & 0                          & 0                          & 15                         & 20                         & 2.97                   \\
-            38.71              & 0                          & 0                          & 16                         & 20                         & 2.71                   \\
-            37.96              & 0                          & 0                          & 15                         & 20                         & 2.96                   \\
-            37.89              & 0                          & 0                          & 15                         & 20                         & 2.89                   \\
-            38.03              & 0                          & 0                          & 15                         & 20                         & 3.03                   \\
+            33.33              & 0                          & 0                          & 6                          & 18                         & 9.33                   \\
+            33.04              & 0                          & 0                          & 6                          & 18                         & 9.04                   \\
+            33.01              & 0                          & 0                          & 6                          & 18                         & 9.01                   \\
+            33                 & 0                          & 0                          & 6                          & 18                         & 9                      \\
+            32.9               & 0                          & 0                          & 6                          & 18                         & 8.9                    \\
+            32.9               & 0                          & 0                          & 6                          & 18                         & 8.9                    \\
+            32.93              & 0                          & 0                          & 6                          & 18                         & 8.93                   \\
+            33.11              & 0                          & 0                          & 6                          & 18                         & 9.11                   \\
+            33.12              & 0                          & 0                          & 6                          & 18                         & 9.12                   \\
+            33.04              & 0                          & 0                          & 6                          & 18                         & 9.04                   \\
             \bottomrule
         \end{tabular}
     }
@@ -491,17 +494,17 @@ This appendix contains the raw timing results, which averages are reported in Ch
         \begin{tabular}{cccccc}
             \toprule
             \textbf{Total [s]} & \begin{tabular}[c]{@{}l@{}}\textbf{Init}\\\textbf{phase [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Allocation}\\\textbf{phase [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Signals}\\\textbf{update [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Instances}\\\textbf{execution [s]}\end{tabular} & \textbf{Remainder [s]} \\
-            \cmidrule[\heavyrulewidth]{1-5}
-            185.02             & 0                          & 0                          & 65                         & 111                        & 9.02                   \\
-            183.77             & 0                          & 0                          & 64                         & 111                        & 8.77                   \\
-            183.32             & 0                          & 0                          & 63                         & 111                        & 9.32                   \\
-            183.35             & 0                          & 0                          & 63                         & 112                        & 8.35                   \\
-            184.04             & 0                          & 0                          & 64                         & 111                        & 9.04                   \\
-            187.69             & 0                          & 0                          & 67                         & 112                        & 8.69                   \\
-            183.93             & 0                          & 0                          & 64                         & 111                        & 8.93                   \\
-            185.84             & 0                          & 0                          & 66                         & 112                        & 7.84                   \\
-            184.16             & 0                          & 0                          & 63                         & 112                        & 9.16                   \\
-            184.11             & 0                          & 0                          & 64                         & 111                        & 9.11                   \\
+            \toprule
+            197.91             & 0                          & 0                          & 47                         & 103                        & 47.91                  \\
+            202.87             & 0                          & 0                          & 50                         & 104                        & 48.87                  \\
+            197.46             & 0                          & 0                          & 47                         & 103                        & 47.46                  \\
+            198.62             & 0                          & 0                          & 47                         & 103                        & 48.62                  \\
+            199.06             & 0                          & 0                          & 48                         & 103                        & 48.06                  \\
+            198.28             & 0                          & 0                          & 47                         & 103                        & 48.28                  \\
+            198.97             & 0                          & 0                          & 48                         & 103                        & 47.97                  \\
+            199.36             & 0                          & 0                          & 48                         & 103                        & 48.36                  \\
+            200.68             & 0                          & 0                          & 50                         & 103                        & 47.68                  \\
+            198.99             & 0                          & 0                          & 47                         & 103                        & 48.99                  \\
             \bottomrule
         \end{tabular}
     }
@@ -515,16 +518,16 @@ This appendix contains the raw timing results, which averages are reported in Ch
             \toprule
             \textbf{Total [s]} & \textbf{Init phase [s]} & \begin{tabular}[c]{@{}l@{}}\textbf{Allocation}\\\textbf{phase [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Signals}\\\textbf{update [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Instances}\\\textbf{execution [s]}\end{tabular} & \textbf{Remainder [s]} \\
             \toprule
-            57.82              & 0                       & 0                          & 15                         & 38                         & 4.82                   \\
-            58.99              & 0                       & 0                          & 17                         & 38                         & 3.99                   \\
-            66.88              & 0                       & 0                          & 24                         & 38                         & 4.88                   \\
-            57.74              & 0                       & 0                          & 15                         & 38                         & 4.74                   \\
-            57.69              & 0                       & 0                          & 15                         & 38                         & 4.69                   \\
-            57.83              & 0                       & 0                          & 15                         & 38                         & 4.83                   \\
-            59.15              & 0                       & 0                          & 17                         & 38                         & 4.15                   \\
-            59.11              & 0                       & 0                          & 17                         & 38                         & 4.11                   \\
-            58.01              & 0                       & 0                          & 15                         & 38                         & 5.01                   \\
-            58.02              & 0                       & 0                          & 15                         & 38                         & 5.02                   \\
+            66.02              & 0                       & 0                          & 14                         & 31                         & 21.02                  \\
+            65.98              & 0                       & 0                          & 14                         & 31                         & 20.98                  \\
+            66.4               & 0                       & 0                          & 15                         & 31                         & 20.4                   \\
+            65.83              & 0                       & 0                          & 14                         & 31                         & 20.83                  \\
+            66.33              & 0                       & 0                          & 14                         & 31                         & 21.33                  \\
+            65.96              & 0                       & 0                          & 14                         & 31                         & 20.96                  \\
+            65.79              & 0                       & 0                          & 14                         & 31                         & 20.79                  \\
+            65.33              & 0                       & 0                          & 14                         & 31                         & 20.33                  \\
+            65.73              & 0                       & 0                          & 14                         & 31                         & 20.73                  \\
+            67.74              & 0                       & 0                          & 15                         & 31                         & 21.74                  \\
             \bottomrule
         \end{tabular}
     }
@@ -538,16 +541,16 @@ This appendix contains the raw timing results, which averages are reported in Ch
             \toprule
             \textbf{Total [s]} & \textbf{Init phase [s]} & \begin{tabular}[c]{@{}l@{}}\textbf{Allocation}\\\textbf{phase [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Signals}\\\textbf{update [s]}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Instances}\\\textbf{execution [s]}\end{tabular} & \textbf{Remainder [s]} \\
             \toprule
-            11.32              & 0                       & 0                          & 2                          & 6                          & 3.32                   \\
-            11.4               & 0                       & 0                          & 3                          & 6                          & 2.4                    \\
-            11.39              & 0                       & 0                          & 2                          & 6                          & 3.39                   \\
-            11.45              & 0                       & 0                          & 2                          & 7                          & 2.45                   \\
-            11.66              & 0                       & 0                          & 3                          & 7                          & 1.66                   \\
-            11.37              & 0                       & 0                          & 2                          & 6                          & 3.37                   \\
-            11.6               & 0                       & 0                          & 3                          & 6                          & 2.6                    \\
-            11.38              & 0                       & 0                          & 3                          & 6                          & 2.38                   \\
-            11.35              & 0                       & 0                          & 2                          & 6                          & 3.35                   \\
-            11.37              & 0                       & 0                          & 2                          & 6                          & 3.37                   \\
+            11.61              & 0                       & 0                          & 3                          & 5                          & 3.61                   \\
+            11.51              & 0                       & 0                          & 3                          & 5                          & 3.51                   \\
+            11.58              & 0                       & 0                          & 3                          & 5                          & 3.58                   \\
+            11.69              & 0                       & 0                          & 3                          & 5                          & 3.69                   \\
+            11.68              & 0                       & 0                          & 3                          & 5                          & 3.68                   \\
+            11.59              & 0                       & 0                          & 3                          & 5                          & 3.59                   \\
+            11.61              & 0                       & 0                          & 3                          & 5                          & 3.61                   \\
+            11.47              & 0                       & 0                          & 3                          & 5                          & 3.47                   \\
+            11.64              & 0                       & 0                          & 3                          & 5                          & 3.64                   \\
+            11.5               & 0                       & 0                          & 3                          & 5                          & 3.5                    \\
             \bottomrule
         \end{tabular}
     }
@@ -561,16 +564,16 @@ This appendix contains the raw timing results, which averages are reported in Ch
             \toprule
             \textbf{Design} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} \\
             \toprule
-            CDC (Gray)      & 29.13      & 29.14      & 29.06      & 29.19      & 29.18      & 29.08      & 28.99      & 29.09      & 29.54      & 29.18       \\
-            CDC (Strobe)    & 36.64      & 36.72      & 37.01      & 36.98      & 36.10      & 36.74      & 36.18      & 37.09      & 36.08      & 36.18       \\
-            FIFO Queue      & 10.86      & 10.88      & 11.02      & 10.96      & 11.03      & 10.82      & 10.91      & 10.75      & 10.84      & 10.74       \\
-            FIR Filter      & 63.68      & 63.59      & 63.77      & 63.51      & 63.29      & 64.01      & 63.57      & 64.01      & 64.38      & 63.66       \\
-            Graycode        & 15.96      & 15.64      & 15.63      & 15.52      & 15.95      & 15.52      & 15.79      & 15.8       & 15.69      & 15.67       \\
-            LFSR            & 26.37      & 26.93      & 25.89      & 26.31      & 26.35      & 26.2       & 25.94      & 26.50      & 26.13      & 26.58       \\
-            LZC             & 36.54      & 36.78      & 36.26      & 37.77      & 36.37      & 36.75      & 37.09      & 36.97      & 36.56      & 37.28       \\
-            RR Arbiter      & 176.9      & 176.16     & 175.95     & 176.52     & 181.49     & 175.77     & 176.02     & 175.97     & 179.16     & 176.89      \\
-            Snitch          & 56.01      & 56.31      & 57.12      & 56.26      & 55.93      & 55.82      & 57.32      & 57.17      & 56.17      & 55.88       \\
-            Stream Delayer  & 10.37      & 10.37      & 10.31      & 10.56      & 10.55      & 10.54      & 10.33      & 10.36      & 10.4       & 10.28       \\
+            CDC (Gray)      & 32.49      & 32.79      & 33.29      & 32.88      & 33.64      & 32.75      & 32.59      & 33.23      & 32.62      & 33.40       \\
+            CDC (Strobe)    & 39.34      & 39.10      & 40.01      & 40.23      & 39.70      & 39.14      & 39.86      & 38.89      & 39.31      & 40.86       \\
+            FIFO Queue      & 10.23      & 10.19      & 10.25      & 10.22      & 10.21      & 10.16      & 10.09      & 10.17      & 10.18      & 10.18       \\
+            FIR Filter      & 63.76      & 64.75      & 63.76      & 62.86      & 63.39      & 63.32      & 63.65      & 63.78      & 64.00      & 64.51       \\
+            Graycode        & 16.68      & 16.67      & 16.48      & 16.47      & 16.72      & 16.49      & 16.45      & 16.50      & 16.55      & 18.94       \\
+            LFSR            & 26.24      & 26.22      & 26.59      & 26.61      & 26.42      & 27.23      & 26.87      & 25.97      & 26.08      & 26.26       \\
+            LZC             & 31.00      & 31.25      & 31.41      & 31.24      & 31.19      & 31.54      & 31.49      & 31.01      & 31.35      & 31.13       \\
+            RR Arbiter      & 190.25     & 192.97     & 189.85     & 190.12     & 190.22     & 189.80     & 189.68     & 195.77     & 190.01     & 193.48      \\
+            Snitch          & 64.04      & 64.53      & 64.33      & 64.01      & 64.10      & 64.65      & 63.99      & 64.10      & 63.81      & 64.42       \\
+            Stream Delayer  & 10.52      & 10.52      & 10.41      & 10.66      & 10.54      & 10.51      & 10.77      & 10.55      & 10.45      & 10.41       \\
             \bottomrule
         \end{tabular}
     }
