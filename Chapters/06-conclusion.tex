@@ -3,12 +3,12 @@
 \chapter{Conclusion}
 With this thesis, we showed that LLHD is fully representable in MLIR (and that our representation is correct) by defining an LLHD dialect and correctly simulating various real-world designs represented in it.
 Furthermore, our first implementation of the MLIR-based simulator already comes close to competitive performance. In particular, our simulator manages to surpass a well-established commercial simulator for some test cases, running up to $1.4$ times faster and otherwise only $2.4$ times slower on average. This while being a young and foundational work focused on correctness, with only a few optimizations targeted at performance.
-We also showed that the performance losses in our implementation mainly reside in the runtime library and simulator engine, and not in the execution of the lowered LLHD code, making the simulator a good optimization target with high speed-up potential. The small set of optimization we could implement already shows the massive performance speed-up potential present in our simulator. We are confident that further exploration of LLHD-based simulation could enable a new and open-source standard in HDL simulation and verification.
+We also showed that the performance losses in our implementation mainly reside in the runtime library and simulator engine, and not in the execution of the lowered LLHD code, making the simulator a good optimization target. The small set of optimization we could implement already shows the massive performance speed-up potential present in our simulator. We are confident that further exploration of LLHD-based simulation could enable a new and open-source standard in HDL simulation and verification.
 
 %---------------------------------------------------------------------------------------------------
 
 \section{Future Work}
-We think our first implementation opens up many interesting research questions that could be explored in the future, including:
+We think our first implementation opens up many interesting research questions regarding LLHD simulation that could be explored in the future, including:
 
 \begin{itemize}
   \item Though initially planned for this thesis, we did not manage to explore what speed-ups we could obtain through a multi-threaded simulation approach. Considering that a significant amount of time in our simulation is spent in creating events, we think adopting a simple \textit{Centralized-queue} algorithm~\cite{Ashenden1994} could already bring significant performance improvements, by splitting that phase over multiple threads.
