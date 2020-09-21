@@ -1,7 +1,7 @@
 \chapter{Diff Listings}
 \label{app:diffs}
 
-This appendix contains the full listing of the differences obtain when running the \texttt{diff} utility on the trace generated through Vivado's simulator (on the left, lines starting with “\texttt{<}“) against the trace generated with our MLIR-based simulator (on the right, lines starting with “\texttt{>}“). Note that a listing for the \textit{Graycode} example is not provided, as no diff is generated for that example. Also, due to a large amount of variable “don't care“ values (\texttt{x}) present in the Snitch's trace, we only list the diff for the first $50$ns for that example, but we note that all the remaining changes follow the same pattern as the ones we show, where the differences are all due to the signal \texttt{data\_qdata\_o} receiving \texttt{x} payloads.
+This appendix contains the full listing of the differences obtain when running the \texttt{diff} utility on the trace generated through Vivado's simulator (on the left, lines starting with “\texttt{<}“) against the trace generated with our MLIR-based simulator (on the right, lines starting with “\texttt{>}“). Note that a listing for the \textit{Graycode} example is not provided, as no diff is generated for that example. Also, due to a large amount of variable “don't care“ values (\texttt{x}) present in the \textit{Snitch} trace, we only list the diff for the first $50$ns for that example, but we note that all the remaining changes follow the same pattern as the ones we show, where the differences are due to the \texttt{data\_qdata\_o} signal receiving \texttt{x} payloads.
 
 \begin{listing}[H]
     \inputminted[
